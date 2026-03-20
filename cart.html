@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fedelicious | Your Cart</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg-dark: #09261c;
+    --accent-orange: #ea5b0c;
+    --card-bg: #0d3627;
+    --text-light: #ffffff;
+    --text-muted: #a3b8b0;
+}
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+body { background:var(--bg-dark); color:var(--text-light); min-height:100vh; display:flex; flex-direction:column; }
+nav { display:flex; justify-content:space-between; align-items:center; padding:20px 50px; background:var(--bg-dark); }
+.logo { font-size:24px; font-weight:700; color:white; text-decoration:none; }
+.logo span { background:var(--accent-orange); padding:5px 12px; border-radius:5px; margin-right:5px; }
+.back-link { color:var(--text-muted); text-decoration:none; font-size:14px; font-weight:600; }
+.back-link:hover { color:var(--accent-orange); }
+.container { max-width:900px; margin:40px auto; padding:0 20px; flex:1; width:100%; }
+h1 { font-family:'Playfair Display', serif; font-size:2.8rem; margin-bottom:30px; text-align:center; }
+.cart-wrapper { background:var(--card-bg); border-radius:20px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.3); }
+.cart-table { width:100%; border-collapse:collapse; }
+.cart-table th { background:rgba(0,0,0,0.2); padding:15px 20px; text-align:left; font-size:0.75rem; text-transform:uppercase; color:var(--accent-orange); letter-spacing:1px; }
+.cart-table td { padding:20px; border-bottom:1px solid rgba(255,255,255,0.05); }
+.qty-controls { display:flex; align-items:center; gap:15px; }
+.qty-btn { background:#134d38; border:none; color:white; width:28px; height:28px; border-radius:6px; cursor:pointer; font-weight:bold; }
+.qty-btn:hover { background:var(--accent-orange); }
+.remove-btn { color:#ff4d4d; cursor:pointer; background:none; border:none; font-size:1.1rem; }
+.cart-footer { display:flex; justify-content:space-between; align-items:center; padding:30px; background:rgba(0,0,0,0.1); }
+.total-info p { color:var(--text-muted); font-size:0.9rem; margin-bottom:5px; }
+.total-price { font-size:2.2rem; font-weight:700; color:var(--accent-orange); }
+.actions { display:flex; flex-direction:column; gap:10px; align-items:flex-end; }
+.btn-checkout { background:var(--accent-orange); color:white; border:none; padding:15px 45px; border-radius:12px; font-weight:700; cursor:pointer; text-transform:uppercase; }
+.btn-checkout:hover { transform:translateY(-3px); box-shadow:0 8px 20px rgba(234,91,12,0.3); }
+.btn-clear { color:var(--text-muted); background:none; border:none; font-size:0.8rem; cursor:pointer; text-decoration:underline; }
+.empty-msg { text-align:center; padding:80px 20px; }
+.empty-msg p { color:var(--text-muted); margin-bottom:20px; font-size:1.1rem; }
+</style>
+</head>
+<body>
+
+<nav>
+<a href="index.html" class="logo"><span>F</span> Fedelicious</a>
+<a href="menu.html" class="back-link">← CONTINUE SHOPPING</a>
+</nav>
+
+<div class="container">
+<h1>Your Basket</h1>
+
+<div id="cart-content" class="cart-wrapper">
+<table class="cart-table">
+<thead>
+<tr>
+<th>Item</th>
+<th>Price</th>
+<th>Quantity</th>
+<th>Subtotal</th>
+<th></th>
+</tr>
+</thead>
+<tbody id="cart-body"></tbody>
+</table>
+
+<div class="cart-footer">
+<div class="total-info">
+<p>Grand Total</p>
+<div class="total-price" id="grand-total">₱0.00</div>
+</div>
+<div class="actions">
+<button class="btn-checkout" onclick="proceedToCheckout()">Proceed to Checkout</button>
+<button class="btn-clear" onclick="clearCart()">Clear Cart</button>
+</div>
+</div>
+</div>
+
+<div id="empty-cart" class="empty-msg" style="display:none;">
+<p>Your basket is empty. Those wings aren't going to order themselves!</p>
+<button class="btn-checkout" onclick="window.location.href='menu.html'">View Menu</button>
+</div>
+</div>
+
+<script>
+// Load cart from localStorage
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+function renderCart(){
+    const cartContent = document.getElementById('cart-content');
+    const emptyMsg = document.getElementById('empty-cart');
+    const tbody = document.getElementById('cart-body');
+    const grandTotalDisplay = document.getElementById('grand-total');
+
+    if(cart.length===0){
+        cartContent.style.display='none';
+        emptyMsg.style.display='block';
+        return;
+    }
+
+    cartContent.style.display='block';
+    emptyMsg.style.display='none';
+    tbody.innerHTML='';
+    let total=0;
+
+    cart.forEach((item,index)=>{
+        const subtotal = item.price * item.qty;
+        total += subtotal;
+
+        tbody.innerHTML += `
+        <tr>
+            <td><strong style="color:white">${item.name}</strong></td>
+            <td>₱${item.price.toLocaleString()}</td>
+            <td>
+                <div class="qty-controls">
+                    <button class="qty-btn" onclick="updateQty(${index}, -1)">-</button>
+                    <span>${item.qty}</span>
+                    <button class="qty-btn" onclick="updateQty(${index}, 1)">+</button>
+                </div>
+            </td>
+            <td style="font-weight:600; color:var(--accent-orange)">₱${subtotal.toLocaleString()}</td>
+            <td><button class="remove-btn" onclick="removeItem(${index})" title="Remove">🗑️</button></td>
+        </tr>`;
+    });
+
+    grandTotalDisplay.innerText=`₱${total.toLocaleString()}`;
+}
+
+function updateQty(index,change){
+    cart[index].qty += change;
+    if(cart[index].qty <=0){
+        removeItem(index);
+    }else{
+        saveAndRender();
+    }
+}
+
+function removeItem(index){
+    if(confirm(`Remove ${cart[index].name} from basket?`)){
+        cart.splice(index,1);
+        saveAndRender();
+    }
+}
+
+function clearCart(){
+    if(confirm("Are you sure you want to clear your entire basket?")){
+        cart=[];
+        saveAndRender();
+    }
+}
+
+function saveAndRender(){
+    localStorage.setItem('cart',JSON.stringify(cart));
+    renderCart();
+}
+
+function proceedToCheckout(){
+    const customerId = localStorage.getItem("customer_id") || 1; // Logged-in user ID
+    if(!customerId){
+        alert("Please log in to continue checkout.");
+        window.location.href="login.html";
+        return;
+    }
+    window.location.href="checkout.html";
+}
+
+// Initial render
+renderCart();
+</script>
+</body>
+</html>

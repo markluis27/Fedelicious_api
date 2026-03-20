@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fedelicious | Table Booking</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #05110d;
+            --accent-orange: #ea5b0c;
+            --card-bg: #09261c;
+            --input-bg: #05110d;
+            --text-light: #ffffff;
+            --text-muted: #a3b8b0;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            overflow-x: hidden;
+        }
+
+        /* Navbar */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 80px;
+            background: rgba(5, 17, 13, 0.9);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        .logo { font-weight: 800; font-size: 1.5rem; display: flex; align-items: center; gap: 10px; }
+        .logo span { background: var(--accent-orange); padding: 5px 12px; border-radius: 8px; }
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .nav-links a.active { color: var(--accent-orange); }
+
+        /* Hero Container */
+        .container {
+            display: flex;
+            max-width: 1200px;
+            margin: 140px auto 60px;
+            padding: 0 40px;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .hero-text { flex: 1; }
+        .hero-text h1 {
+            font-size: 4.5rem;
+            margin: 0;
+            line-height: 1;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+        .hero-text h1 span {
+            color: var(--accent-orange);
+            display: block;
+            font-style: italic;
+            font-family: 'Playfair Display', serif;
+        }
+        .hero-text p {
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin: 25px 0;
+            max-width: 450px;
+        }
+        .hero-text p b { color: var(--text-light); border-bottom: 2px solid var(--accent-orange); }
+
+        .features { list-style: none; padding: 0; }
+        .features li {
+            margin-bottom: 15px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+        .features li i { color: var(--accent-orange); font-size: 1rem; }
+
+        /* Booking Card */
+        .booking-card {
+            flex: 0.9;
+            background: var(--card-bg);
+            padding: 50px;
+            border-radius: 40px;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+        }
+
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 10px;
+        }
+
+        .input-box {
+            background: var(--input-bg);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: 0.3s;
+            position: relative;
+        }
+        .input-box:focus-within { border-color: var(--accent-orange); }
+        .input-box i { color: var(--text-muted); font-size: 1.1rem; }
+        
+        /* Fixed clickable inputs */
+        .input-box input, .input-box select {
+            background: transparent;
+            border: none;
+            color: white;
+            width: 100%;
+            font-family: inherit;
+            outline: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        /* Custom Styling for Date/Time Picker Indicators */
+        input[type="date"]::-webkit-calendar-picker-indicator,
+        input[type="time"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+            opacity: 0.6;
+        }
+
+        .fee-card {
+            background: var(--input-bg);
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .fee-card .label { font-size: 0.6rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
+        .fee-card .price { font-size: 2.5rem; font-weight: 800; color: white; margin: 0; }
+        .fee-card .required-tag {
+            background: rgba(234, 91, 12, 0.1);
+            color: var(--accent-orange);
+            padding: 5px 15px;
+            border-radius: 10px;
+            font-size: 0.6rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .btn-confirm {
+            width: 100%;
+            background: var(--accent-orange);
+            color: white;
+            border: none;
+            padding: 22px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-confirm:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(234, 91, 12, 0.3); }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); display: none;
+            justify-content: center; align-items: center; z-index: 2000;
+        }
+        .payment-modal {
+            background: var(--card-bg); padding: 40px; border-radius: 35px;
+            width: 420px; text-align: center; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .modal-qr { background: white; width: 180px; height: 180px; margin: 20px auto; border-radius: 20px; padding: 10px; }
+        .modal-qr img { width: 100%; }
+        .modal-input {
+            width: 100%; padding: 15px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1);
+            background: var(--bg-dark); color: white; margin-top: 10px; outline: none; text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo"><span>F</span> FEDELICIOUS</div>
+    <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="menu.html">Menu</a>
+        <a href="reservation.html" class="active">Reservation</a>
+        <a href="orders.html">Orders</a>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="hero-text">
+        <h1>TABLE <span>BOOKING</span></h1>
+        <p>Experience the finest wings in Talisay. Secure your slot now. A <b>₱50 downpayment</b> is required to finalize your table.</p>
+        
+        <ul class="features">
+            <li><i class="fa-solid fa-circle-check"></i> Guaranteed Seating</li>
+            <li><i class="fa-solid fa-circle-check"></i> Faster Service</li>
+            <li><i class="fa-solid fa-circle-check"></i> Exclusive Promos</li>
+        </ul>
+    </div>
+
+    <div class="booking-card">
+        <div class="input-group">
+            <label>Select Capacity</label>
+            <div class="input-box">
+                <i class="fa-solid fa-users"></i>
+                <select id="guest_count">
+                    <option value="2">1-2 Persons</option>
+                    <option value="4">3-4 Persons</option>
+                    <option value="6">5-6 Persons</option>
+                </select>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 20px;">
+            <div class="input-group" style="flex: 1;">
+                <label>Pick Date</label>
+                <div class="input-box">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <input type="date" id="res_date">
+                </div>
+            </div>
+            <div class="input-group" style="flex: 1;">
+                <label>Preferred Time</label>
+                <div class="input-box">
+                    <i class="fa-solid fa-clock"></i>
+                    <input type="time" id="res_time">
+                </div>
+            </div>
+        </div>
+
+        <div class="fee-card">
+            <div>
+                <span class="label">Downpayment Fee</span>
+                <h2 class="price">₱50</h2>
+            </div>
+            <span class="required-tag">Required</span>
+        </div>
+
+        <button class="btn-confirm" onclick="openPayment()">
+            Confirm Reservation <i class="fa-solid fa-arrow-right"></i>
+        </button>
+    </div>
+</div>
+
+<div class="modal-overlay" id="paymentModal">
+    <div class="payment-modal">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/52/GCash_logo.svg" width="120" alt="GCash">
+        <div class="modal-qr"><img src="images/gcash-qr.png" alt="QR Code"></div>
+        <p style="margin: 0; font-weight: 700; color: var(--accent-orange);">Amount: ₱50.00</p>
+        
+        <div style="text-align: left; margin-top: 20px;">
+            <label style="font-size: 10px; font-weight: 800; color: var(--text-muted);">GCash Number</label>
+            <input type="text" id="gcash_num" class="modal-input" placeholder="09xxxxxxxxx" maxlength="11">
+            
+            <label style="font-size: 10px; font-weight: 800; color: var(--text-muted); margin-top: 15px;">Reference Number</label>
+            <input type="text" id="ref_num" class="modal-input" placeholder="13-Digit Reference Number">
+        </div>
+
+        <button class="btn-confirm" id="submitBtn" onclick="submitReservation()">Complete Booking</button>
+        <p style="font-size: 0.7rem; color: var(--text-muted); cursor: pointer; margin-top: 15px;" onclick="closeModal()">Cancel</p>
+    </div>
+</div>
+
+<script>
+    const API_RES = 'https://localhost:7201/api/Reservation';
+    const API_PAY = 'https://localhost:7201/api/Payment';
+
+    function openPayment() {
+        const date = document.getElementById('res_date').value;
+        const time = document.getElementById('res_time').value;
+        if(!date || !time) return alert("Please select date and time.");
+        document.getElementById('paymentModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('paymentModal').style.display = 'none';
+    }
+
+    async function submitReservation() {
+        const gNum = document.getElementById('gcash_num').value;
+        const refNum = document.getElementById('ref_num').value;
+        const btn = document.getElementById('submitBtn');
+
+        if(gNum.length < 11 || refNum.length < 10) return alert("Complete payment details.");
+
+        btn.disabled = true;
+        btn.innerText = "Processing...";
+
+        // Step 1: Save Reservation
+        const resPayload = {
+            reservation_id: 0,
+            customer_id: parseInt(localStorage.getItem("customer_id")) || 1, // Fallback to 1 for testing
+            reservation_date: document.getElementById('res_date').value,
+            reservation_time: document.getElementById('res_time').value + ":00",
+            number_of_guests: parseInt(document.getElementById('guest_count').value),
+            reservation_status: "Pending Verification",
+            downpayment_amount: 50.00
+        };
+
+        try {
+            const resResp = await fetch(API_RES, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(resPayload)
+            });
+
+            if (resResp.ok) {
+                const resData = await resResp.json();
+                const newResId = resData.data ? resData.data.reservation_id : resData.reservation_id;
+
+                // Step 2: Save Payment
+                const payPayload = {
+                    payment_id: 0,
+                    reservation_id: newResId,
+                    order_id: null,
+                    payment_method: "GCash",
+                    amount: 50.00,
+                    reference_number: refNum,
+                    customer_phone: gNum,
+                    payment_status: "Waiting for Verification",
+                    payment_date: new Date().toISOString()
+                };
+
+                const payResp = await fetch(API_PAY, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payPayload)
+                });
+
+                if(payResp.ok) {
+                    alert("Reservation Successfully Saved!");
+                    window.location.href = "orders.html";
+                }
+            } else {
+                alert("Failed to save reservation.");
+            }
+        } catch (e) {
+            alert("Server Error.");
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "Complete Booking";
+        }
+    }
+
+    // Set minimum date to today
+    document.getElementById('res_date').min = new Date().toISOString().split('T')[0];
+</script>
+</body>
+</html>

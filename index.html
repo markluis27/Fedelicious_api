@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fedelicious | Experience the Bold</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #09261c;
+            --accent-orange: #ea5b0c;
+            --text-light: #ffffff;
+            --text-muted: #a3b8b0;
+            --card-bg: #0d3627;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text-light); overflow-x: hidden; }
+        h1, h2, h3 { font-family: 'Playfair Display', serif; }
+        a { text-decoration: none; color: inherit; }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            position: absolute;
+            width: 100%;
+            z-index: 10;
+        }
+        .logo { font-size: 24px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .logo-box { background: var(--accent-orange); padding: 5px 12px; border-radius: 5px; }
+
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent-orange); }
+
+        .icons { display: flex; align-items: center; gap: 20px; }
+        .cart-icon-container { position: relative; cursor: pointer; font-size: 1.2rem; }
+        .cart-badge {
+            position: absolute; top: -8px; right: -8px;
+            background-color: var(--accent-orange);
+            font-size: 10px; font-weight: bold;
+            height: 18px; width: 18px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(rgba(9, 38, 28, 0.7), rgba(9, 38, 28, 0.9)), 
+                        url('https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1949&q=80') center/cover;
+            padding: 0 20px;
+        }
+        .hero h1 { font-size: 5rem; line-height: 1.1; margin-bottom: 20px; }
+        .hero h1 span { color: var(--accent-orange); font-style: italic; }
+        .hero p { max-width: 600px; color: var(--text-muted); margin-bottom: 40px; }
+
+        .btn-group { display: flex; gap: 20px; }
+        .btn { padding: 15px 40px; border-radius: 30px; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        .btn-primary { background-color: var(--accent-orange); color: white; border: none; }
+        .btn-secondary { background-color: transparent; color: white; border: 2px solid var(--text-muted); }
+        .btn:hover { transform: translateY(-3px); }
+
+        /* Featured Menu */
+        .featured { padding: 80px 50px; }
+        .section-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; }
+        .section-header h2 { font-size: 2.5rem; }
+        .section-header h2 span { color: var(--accent-orange); }
+
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
+        .menu-card { background-color: var(--card-bg); border-radius: 15px; overflow: hidden; transition: 0.3s; }
+        .menu-card:hover { transform: translateY(-10px); }
+        .menu-card img { width: 100%; height: 200px; object-fit: cover; border-bottom: 3px solid var(--accent-orange); }
+        .menu-card-content { padding: 20px; }
+        .price-row { display: flex; justify-content: space-between; align-items: center; color: var(--accent-orange); font-weight: 600; margin-top: 10px; }
+
+        footer { background-color: #061a13; padding: 50px; display: flex; justify-content: space-between; color: var(--text-muted); font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">
+            <span class="logo-box">F</span> Fedelicious
+        </div>
+        <div class="nav-links">
+            <a href="index.html" class="active">Home</a>
+            <a href="menu.html">Menu</a>
+            <a href="reservation.html">Reservation</a>
+            <a href="orders.html">Orders</a>
+        </div>
+        <div class="icons">
+            <a href="cart.html" class="cart-icon-container">
+                <span>🛍️</span>
+                <span class="cart-badge" id="cart-count">0</span>
+            </a>
+            <div id="auth-section">
+                <a href="login.html" style="font-size: 0.8rem; font-weight: 600; color: var(--accent-orange);">SIGN IN</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>Crafting<br><span>Flavor.</span></h1>
+        <p>Blending culinary excellence with premium local ingredients to bring Talisay's best wings to your table[cite: 21, 93].</p>
+        <div class="btn-group">
+            <a href="menu.html" class="btn btn-primary">Order Online</a>
+            <a href="reservation.html" class="btn btn-secondary">Book a Table</a>
+        </div>
+    </section>
+
+    <section class="featured">
+        <div class="section-header">
+            <div>
+                <h2>The House <span>Icons.</span></h2>
+                <p style="color: var(--text-muted); margin-top: 10px;">Our signature Wings and Best Sellers[cite: 47].</p>
+            </div>
+            <a href="menu.html" style="color: var(--accent-orange); font-weight: 600;">SEE ALL MENU →</a>
+        </div>
+
+        <div class="menu-grid" id="featured-menu">
+            <p>Loading signature dishes...</p>
+        </div>
+    </section>
+
+    <footer>
+        <div>
+            <h3 style="color: white; margin-bottom: 10px;">Fedelicious</h3>
+            <p>"Taking culinary excellence further."</p>
+        </div>
+        <div style="text-align: right;">
+            <p>&copy; 2026 Fedelicious Wings Management System[cite: 14].</p>
+        </div>
+    </footer>
+
+    <script>
+        const API_URL = 'https://localhost:7201/api/Menu'; 
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        function loadSession() {
+            const auth = document.getElementById('auth-section');
+            const name = localStorage.getItem("fullName");
+
+            if (name) {
+                auth.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <a href="user.html" style="display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 0.85rem; color: var(--text-muted);">Hi, ${name.split(' ')[0]}!</span>
+                            <span>👤</span>
+                        </a>
+                        <span onclick="logout()" style="cursor:pointer; font-size: 1.1rem; color: var(--accent-orange);">🚪</span>
+                    </div>
+                `;
+            }
+        }
+
+        function logout() {
+            if(confirm("Sign out from Fedelicious?")) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        function updateCart() {
+            const badge = document.getElementById('cart-count');
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            badge.innerText = count;
+            badge.style.display = count > 0 ? 'flex' : 'none';
+        }
+
+        async function fetchFeatured() {
+            const container = document.getElementById('featured-menu');
+            try {
+                const res = await fetch(API_URL);
+                const data = await res.json();
+                container.innerHTML = ''; 
+
+                // Filter wings or just show the first 4 items [cite: 47]
+                const items = data.slice(0, 4);
+
+                items.forEach(item => {
+                    container.innerHTML += `
+                        <div class="menu-card">
+                            <img src="${item.image || 'https://via.placeholder.com/300x200'}" alt="${item.foodName}">
+                            <div class="menu-card-content">
+                                <h3>${item.foodName}</h3>
+                                <div class="price-row">
+                                    <span>₱${item.price}</span>
+                                    <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: 400;">
+                                        ${item.categoryName || 'Best Seller'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch (err) {
+                container.innerHTML = '<p>Check API connection.</p>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSession();
+            updateCart();
+            fetchFeatured();
+        });
+    </script>
+</body>
+</html>

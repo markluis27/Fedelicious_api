@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fedelicious | Checkout & Payment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --bg-dark: #05110d; --accent-orange: #ea5b0c; --card-bg: #09261c; --text-muted: #a3b8b0; --input-bg: #05110d; }
+        body { background: var(--bg-dark); color: white; font-family: 'Poppins', sans-serif; margin: 0; overflow-x: hidden; }
+        nav { display: flex; justify-content: space-between; padding: 20px 60px; background: rgba(5, 17, 13, 0.9); position: sticky; top: 0; backdrop-filter: blur(15px); z-index: 1000; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+
+        .container { display: flex; max-width: 1300px; margin: auto; gap: 40px; padding: 40px; align-items: flex-start; }
+        .bag-section { flex: 1.2; }
+        .bag-section h1 { font-family: 'Playfair Display', serif; font-size: 3.5rem; font-style: italic; margin: 0; }
+        .bag-section p { color: var(--accent-orange); font-weight: 700; font-size: 0.7rem; letter-spacing: 2px; margin-bottom: 30px; }
+
+        .cart-item { background: var(--card-bg); padding: 20px; border-radius: 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.02); }
+        .item-info { display: flex; align-items: center; gap: 15px; }
+        .item-img { width: 60px; height: 60px; background: var(--bg-dark); border-radius: 15px; display: flex; align-items: center; justify-content: center; color: var(--accent-orange); }
+
+        .right-side { flex: 0.8; background: var(--card-bg); padding: 35px; border-radius: 35px; border: 1px solid rgba(255,255,255,0.05); position: sticky; top: 100px; }
+
+        .service-tabs { display: flex; background: #040d0a; border-radius: 15px; padding: 6px; margin-bottom: 25px; }
+        .tab { flex: 1; text-align: center; padding: 12px; border-radius: 12px; cursor: pointer; font-size: 0.65rem; font-weight: 700; color: var(--text-muted); transition: 0.3s; }
+        .tab.active { background: var(--accent-orange); color: white; }
+
+        label { font-size: 0.65rem; color: var(--text-muted); font-weight: 700; margin-bottom: 8px; display: block; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .input-box { background: var(--input-bg); border-radius: 12px; display: flex; align-items: center; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.05); height: 55px; padding: 0 15px; position: relative; }
+        .input-box i { color: var(--accent-orange); margin-right: 15px; }
+        .input-box input, .input-box select { background: transparent; border: none; color: white; width: 100%; height: 100%; outline: none; font-family: inherit; cursor: pointer; }
+
+        input[type="date"]::-webkit-calendar-picker-indicator,
+        input[type="time"]::-webkit-calendar-picker-indicator { position: absolute; left: 0; top: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+
+        .total-row { display: flex; justify-content: space-between; align-items: baseline; margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .total-price { font-size: 2.5rem; font-weight: 700; color: var(--accent-orange); }
+
+        .btn-confirm { width: 100%; padding: 20px; background: var(--accent-orange); color: white; border: none; border-radius: 20px; font-weight: 700; cursor: pointer; margin-top: 25px; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
+        .btn-confirm:hover { background: #ff6a13; transform: translateY(-2px); }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 9999; }
+        .payment-modal { background: var(--card-bg); padding: 40px; border-radius: 30px; width: 400px; text-align: center; border: 1px solid rgba(234, 91, 12, 0.3); }
+        .qr-container { background: white; width: 180px; height: 180px; margin: 0 auto 20px; border-radius: 15px; padding: 10px; display: flex; align-items: center; justify-content: center;}
+        .qr-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .queue-badge { background: #040d0a; color: var(--accent-orange); padding: 8px 20px; border-radius: 50px; font-size: 0.75rem; font-weight: 700; margin-bottom: 20px; display: inline-block; border: 1px solid rgba(234, 91, 12, 0.2); }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div style="font-weight:700; letter-spacing: 2px;">FEDELICIOUS</div>
+    <a href="menu.html" style="color:var(--text-muted); text-decoration:none; font-size: 0.8rem;">← BACK TO MENU</a>
+</nav>
+
+<div class="container">
+    <div class="bag-section">
+        <h1>YOUR BAG</h1>
+        <p>SELECTED DELICACIES</p>
+        <div id="cart-list"></div>
+    </div>
+
+    <div class="right-side">
+        <div class="service-tabs">
+            <div class="tab active" onclick="setService('Dine-in', this)">DINE-IN</div>
+            <div class="tab" onclick="setService('Pick-up', this)">PICK-UP</div>
+            <div class="tab" onclick="setService('Delivery', this)">DELIVERY</div>
+        </div>
+
+        <label>Pick Date</label>
+        <div class="input-box"><i class="fa-regular fa-calendar"></i><input type="date" id="order_date"></div>
+
+        <label>Pick Time</label>
+        <div class="input-box"><i class="fa-regular fa-clock"></i><input type="time" id="order_time"></div>
+
+        <div id="delivery-info" style="display:none;">
+            <label>Location</label>
+            <div class="input-box">
+                <i class="fa-solid fa-truck"></i>
+                <select id="location_fee" onchange="renderTotal()">
+                    <option value="15">Bogo (₱15 Fee)</option>
+                    <option value="30">San Juan (₱30 Fee)</option>
+                </select>
+            </div>
+            <label>Exact Address</label>
+            <div class="input-box"><i class="fa-solid fa-map-pin"></i><input type="text" id="delivery_address" placeholder="House No / Street / Brgy"></div>
+        </div>
+
+        <div class="total-row">
+            <span style="font-family:'Playfair Display'; font-style:italic; font-size:1.5rem;">Total</span>
+            <span class="total-price" id="total-display">₱0</span>
+        </div>
+
+        <button class="btn-confirm" id="orderBtn" onclick="processOrder()">CONFIRM & PAY →</button>
+    </div>
+</div>
+
+<div class="modal-overlay" id="payment-overlay">
+    <div class="payment-modal">
+        <h2 id="modal-payment-title" style="margin-top:0; margin-bottom: 15px; color:white; font-size: 1.5rem; letter-spacing: 1px;">GCASH PAYMENT</h2>
+        
+        <div><span class="queue-badge" id="queue-no">ORDER: SAVING...</span></div>
+        
+        <div class="qr-container">
+            <img src="" id="modal-qr-img" alt="Loading QR Code...">
+        </div>
+        
+        <p style="font-size:0.75rem; color:var(--text-muted);">Please scan to pay <span id="modal-amount" style="color:var(--accent-orange); font-weight:700; font-size:1rem;"></span></p>
+        
+        <div style="text-align: left; margin-top:20px;">
+            <label id="account-num-label">Account Number</label>
+            <div class="input-box"><i class="fas fa-phone"></i><input type="text" id="gcash_num" placeholder="09xxxxxxxxx" maxlength="11"></div>
+            <label>Reference No.</label>
+            <div class="input-box"><i class="fas fa-receipt"></i><input type="text" id="ref_num" placeholder="13-Digit Code"></div>
+        </div>
+        
+        <button class="btn-confirm" id="payment-btn" onclick="submitFinalPayment()">COMPLETE PAYMENT →</button>
+        <p onclick="closePaymentModal()" style="font-size:0.7rem; color:var(--text-muted); cursor:pointer; margin-top:15px; text-transform: uppercase; font-weight: 700;">Close & Pay Later</p>
+    </div>
+</div>
+
+<script>
+    const API_ORDER = 'https://localhost:7201/api/Order';
+    const API_PAYMENT = 'https://localhost:7201/api/Payment';
+    const API_AUTH = 'https://localhost:7201/api/Auth/getCustomerId/';
+    const API_ACTIVE_QR = 'https://localhost:7201/api/PaymentQr/active'; // New Endpoint
+
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    let serviceType = 'Dine-in';
+    let currentOrderId = null;
+    let totalToPay = 0;
+    
+    // Default fallback in case API is down
+    let activePaymentMethodName = "GCash"; 
+
+    // Function to fetch the active QR Code from your Database
+    async function loadActiveQR() {
+        try {
+            const res = await fetch(API_ACTIVE_QR);
+            if (res.ok) {
+                const qrs = await res.json();
+                if (qrs && qrs.length > 0) {
+                    const activeQr = qrs[0]; // Get the first active QR
+                    activePaymentMethodName = activeQr.qr_name;
+                    
+                    // Update Modal UI
+                    document.getElementById('modal-payment-title').innerText = `${activeQr.qr_name.toUpperCase()} PAYMENT`;
+                    document.getElementById('account-num-label').innerText = `${activeQr.qr_name} Number`;
+                    document.getElementById('modal-qr-img').src = `data:image/jpeg;base64,${activeQr.qr_image}`;
+                }
+            }
+        } catch (e) {
+            console.error("Failed to fetch active QR. Using fallback UI.", e);
+            document.getElementById('modal-qr-img').alt = "No active QR found. Pay over counter.";
+        }
+    }
+
+    function renderTotal() {
+        const subtotal = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+        const fee = (serviceType === 'Delivery') ? parseInt(document.getElementById("location_fee").value) : 0;
+        totalToPay = subtotal + fee;
+        document.getElementById("total-display").innerText = "₱" + totalToPay.toLocaleString();
+        
+        document.getElementById("cart-list").innerHTML = cart.map(i => `
+            <div class="cart-item">
+                <div class="item-info">
+                    <div class="item-img"><i class="fa-solid fa-utensils"></i></div>
+                    <div><h4 style="margin:0">${i.name}</h4><small>Qty: ${i.qty}</small></div>
+                </div>
+                <div style="font-weight:700">₱${(i.price * i.qty).toLocaleString()}</div>
+            </div>`).join('');
+    }
+
+    function setService(type, el) {
+        serviceType = type;
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById("delivery-info").style.display = (type === 'Delivery') ? 'block' : 'none';
+        renderTotal();
+    }
+
+    async function processOrder() {
+        const date = document.getElementById("order_date").value;
+        const time = document.getElementById("order_time").value;
+        const fullName = localStorage.getItem("fullName");
+
+        if (!date || !time) return alert("Please pick a date and time first.");
+        if (!fullName) return alert("Please login first.");
+
+        const btn = document.getElementById("orderBtn");
+        btn.disabled = true; btn.innerText = "VERIFYING...";
+
+        try {
+            // 1. Get Customer ID
+            const idRes = await fetch(`${API_AUTH}${encodeURIComponent(fullName)}`);
+            const userData = await idRes.json();
+            const cID = userData.customer_id;
+
+            // 2. Prepare Payload
+            const orderPayload = {
+                order_id: 0,
+                customer_id: cID,
+                order_type: serviceType,
+                order_status: "Waiting for Verification",
+                subtotal: cart.reduce((s, i) => s + (i.price * i.qty), 0),
+                delivery_fee: (serviceType === 'Delivery') ? parseInt(document.getElementById("location_fee").value) : 0,
+                total_amount: totalToPay,
+                payment_status: "Unpaid",
+                order_date: date,
+                preferred_time: time + ":00",
+                delivery_address: serviceType === 'Delivery' ? document.getElementById("delivery_address").value : "N/A"
+            };
+
+            // 3. Save Order
+            const res = await fetch(API_ORDER, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(orderPayload)
+            });
+
+            const result = await res.json();
+            if (res.ok) {
+                currentOrderId = result.data ? result.data.order_id : result.order_id;
+                
+                if(currentOrderId) {
+                    localStorage.setItem("latest_order_id", currentOrderId);
+                    document.getElementById("queue-no").innerText = "ORDER ID: #" + currentOrderId;
+                    document.getElementById("modal-amount").innerText = "₱" + totalToPay.toLocaleString();
+                    document.getElementById("payment-overlay").style.display = 'flex';
+                }
+            } else {
+                alert("Error: " + (result.message || "Failed to save order."));
+            }
+        } catch (e) {
+            console.error(e);
+            alert("Connection error to server.");
+        } finally {
+            btn.disabled = false; btn.innerText = "CONFIRM & PAY →";
+        }
+    }
+
+    async function submitFinalPayment() {
+        const gNum = document.getElementById("gcash_num").value.trim();
+        const rNum = document.getElementById("ref_num").value.trim();
+        const orderId = currentOrderId || localStorage.getItem("latest_order_id");
+
+        if (!orderId) return alert("Error: Order ID missing.");
+        if (gNum.length < 11 || rNum.length < 5) return alert("Please fill up payment details.");
+
+        const btn = document.getElementById("payment-btn");
+        btn.disabled = true; btn.innerText = "PROCESSING...";
+
+        // The dynamic activePaymentMethodName is used here (e.g. "Maya" or "GCash")
+        const payPayload = {
+            payment_id: 0,
+            order_id: parseInt(orderId),
+            reservation_id: null,
+            payment_method: activePaymentMethodName, 
+            amount: totalToPay,
+            reference_number: rNum,
+            payment_status: "Pending Verification",
+            payment_date: new Date().toISOString()
+        };
+
+        try {
+            const res = await fetch(API_PAYMENT, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payPayload)
+            });
+            
+            if (res.ok) {
+                alert(`Success! Your ${activePaymentMethodName} payment for Order #${orderId} is submitted.`);
+                localStorage.removeItem("cart");
+                localStorage.removeItem("latest_order_id");
+                window.location.href = "orders.html";
+            } else {
+                const err = await res.json();
+                alert(err.message || "Payment Failed.");
+            }
+        } catch (e) {
+            alert("Payment server error.");
+        } finally {
+            btn.disabled = false; btn.innerText = "COMPLETE PAYMENT →";
+        }
+    }
+
+    function closePaymentModal() { document.getElementById("payment-overlay").style.display = 'none'; }
+    
+    // Run these immediately when the page loads
+    renderTotal();
+    loadActiveQR(); // Pre-load the active QR code from the database
+    
+    document.getElementById('order_date').min = new Date().toISOString().split('T')[0];
+</script>
+
+</body>
+</html>
