@@ -32,6 +32,9 @@ namespace Fedelicious_api.Model
         [Column("image")]
         public string image { get; set; }
 
-        
+        [Column("is_available")]
+        public bool is_available { get; set; }
+
+
     }
 }

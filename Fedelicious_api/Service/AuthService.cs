@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Fedelicious_api.Model;
 using Fedelicious_api.Repository;
 using FluentEmail.Core;
-using System.Diagnostics; // For Debug.WriteLine
+using System.Diagnostics;
 
 namespace Fedelicious_api.Service
 {
@@ -27,42 +27,45 @@ namespace Fedelicious_api.Service
             _fluentEmail = fluentEmail;
         }
 
+        // ================= REGISTER =================
         public bool RegisterCustomer(customers newCustomer)
         {
-            var existing = _customerRepo.GetAll().FirstOrDefault(c => c.email == newCustomer.email);
-            if (existing != null) return false;
-
-            newCustomer.is_verified = false;
-            bool isSaved = _customerRepo.Add(newCustomer);
-
-            if (isSaved)
+            try
             {
-                var savedCustomer = _customerRepo.GetAll().FirstOrDefault(c => c.email == newCustomer.email);
+                var existing = _customerRepo.GetAll()
+                    .FirstOrDefault(c => c.email == newCustomer.email);
 
-                if (savedCustomer != null)
+                if (existing != null) return false;
+
+                newCustomer.is_verified = false;
+
+                bool isSaved = _customerRepo.Add(newCustomer);
+                if (!isSaved) return false;
+
+                var savedCustomer = _customerRepo.GetAll()
+                    .OrderByDescending(c => c.customer_id)
+                    .FirstOrDefault(c => c.email == newCustomer.email);
+
+                if (savedCustomer == null) return false;
+
+                string token = Guid.NewGuid().ToString();
+
+                _tokenRepo.Add(new verification_tokens
                 {
-                    string myToken = Guid.NewGuid().ToString();
-                    var tokenEntry = new verification_tokens
-                    {
-                        token = myToken,
-                        customer_id = savedCustomer.customer_id,
-                        expiry_date = DateTime.Now.AddHours(24)
-                    };
+                    token = token,
+                    customer_id = savedCustomer.customer_id,
+                    expiry_date = DateTime.Now.AddHours(24)
+                });
 
-                    _tokenRepo.Add(tokenEntry);
+                _ = SendVerificationEmail(savedCustomer.email, token);
 
-                    // Send verification email
-                    try
-                    {
-                        SendVerificationEmail(savedCustomer.email, myToken).GetAwaiter().GetResult();
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine($"[SMTP ERROR]: {ex.Message}");
-                    }
-                }
+                return true;
             }
-            return isSaved;
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[REGISTER ERROR]: {ex.Message}");
+                return false;
+            }
         }
 
         private async Task SendVerificationEmail(string email, string token)
@@ -71,51 +74,125 @@ namespace Fedelicious_api.Service
             {
                 string verifyLink = $"https://localhost:7201/api/Auth/verify?token={token}";
 
-                var result = await _fluentEmail
+                await _fluentEmail
                     .To(email)
-            .Subject("Fedelicious | Verify Your Account")
-            .Body($@"
-                <div style='background-color: #f9f9f9; padding: 40px; text-align: center;'>
-                    <div style='background-color: #ffffff; padding: 20px; border-radius: 10px; border: 1px solid #ddd; display: inline-block;'>
-                        <h2 style='color: #09261c;'>Verify Your Account</h2>
-                        <p>Click the button below to activate your account.</p>
-                        <br>
-                        <a href='{verifyLink}' 
-                           target='_blank' 
-                           style='display: inline-block; background-color: #ea5b0c; color: #ffffff; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold;'>
-                           VERIFY EMAIL NOW
-                        </a>
-                        <br><br>
-                        <p style='font-size: 11px; color: #999;'>If the button is not clickable, please mark this email as 'Not Spam'.</p>
-                    </div>
-                </div>", isHtml: true)
-            .SendAsync();
-
-                if (!result.Successful)
-                {
-                    foreach (var error in result.ErrorMessages)
-                    {
-                        Debug.WriteLine($"[FLUENT ERROR]: {error}");
-                    }
-                }
+                    .Subject("Fedelicious | Verify Your Account")
+                    .Body($@"
+                        <h2>Verify Your Account</h2>
+                        <p>Click below:</p>
+                        <a href='{verifyLink}'>VERIFY</a>
+                    ", true)
+                    .SendAsync();
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[SMTP EXCEPTION]: {ex.Message}");
-                throw;
+                Debug.WriteLine($"[EMAIL ERROR]: {ex.Message}");
             }
         }
 
+        // ================= LOGIN =================
         public customers LoginCustomer(string email, string password)
         {
             return _customerRepo.GetAll()
-                .FirstOrDefault(c => c.email == email && c.password == password && c.is_verified == true);
+                .FirstOrDefault(c =>
+                    c.email == email &&
+                    c.password == password &&
+                    c.is_verified == true);
         }
 
         public admins LoginAdmin(string username, string password)
         {
             return _adminRepo.GetAll()
-                .FirstOrDefault(a => a.username == username && a.password == password);
+                .FirstOrDefault(a =>
+                    a.username == username &&
+                    a.password == password);
+        }
+
+        // ================= FORGOT PASSWORD =================
+        public async Task<bool> ForgotPassword(string email)
+        {
+            try
+            {
+                var user = _customerRepo.GetAll()
+                    .FirstOrDefault(c => c.email == email);
+
+                if (user == null) return false;
+
+                string token = Guid.NewGuid().ToString();
+
+                _tokenRepo.Add(new verification_tokens
+                {
+                    token = token,
+                    customer_id = user.customer_id,
+                    expiry_date = DateTime.Now.AddMinutes(15)
+                });
+
+                // ✅ FIXED LINK (THIS IS THE MAIN FIX)
+                string resetLink = $"http://127.0.0.1:5500/reset-password.html?token={token}&email={email}";
+
+                await _fluentEmail
+                    .To(email)
+                    .Subject("Fedelicious | Reset Password")
+                    .Body($@"
+<div style='background:#053b2d;padding:30px;font-family:Poppins,Arial;'>
+
+    <div style='max-width:500px;margin:auto;background:#0d4d3c;padding:30px;border-radius:10px;text-align:center;color:white;'>
+
+        <h1>Fedelicious</h1>
+        <h2>Reset Your Password</h2>
+
+        <p>Click the button below to reset your password.</p>
+
+        <a href='{resetLink}' 
+           style='display:inline-block;
+                  padding:14px 25px;
+                  background:#ff7a00;
+                  color:white;
+                  text-decoration:none;
+                  border-radius:6px;
+                  font-weight:bold;'>
+            RESET PASSWORD
+        </a>
+
+        <p style='margin-top:20px;font-size:12px;'>
+            This link expires in 15 minutes.
+        </p>
+
+    </div>
+
+</div>
+", true)
+                    .SendAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[FORGOT PASSWORD ERROR]: {ex.Message}");
+                return false;
+            }
+        }
+
+        // ================= RESET PASSWORD =================
+        public bool ResetPassword(string token, string password)
+        {
+            var tokenEntry = _tokenRepo.GetAll()
+                .FirstOrDefault(t => t.token == token);
+
+            if (tokenEntry == null || DateTime.Now > tokenEntry.expiry_date)
+                return false;
+
+            var user = _customerRepo.GetById(tokenEntry.customer_id);
+            if (user == null) return false;
+
+            user.password = password;
+            _customerRepo.Update(user);
+
+            // expire token
+            tokenEntry.expiry_date = DateTime.Now.AddSeconds(-1);
+            _tokenRepo.Update(tokenEntry);
+
+            return true;
         }
     }
 }

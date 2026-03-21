@@ -1,5 +1,5 @@
-﻿using Fedelicious_api.Model;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Fedelicious_api.Model;
 
 namespace Fedelicious_api.Service
 {
@@ -8,9 +8,11 @@ namespace Fedelicious_api.Service
         IEnumerable<reservations> GetAllReservations();
         reservations GetReservationById(int id);
         IEnumerable<reservations> GetReservationsByCustomer(int customerId);
+
         reservations CreateReservation(reservations newReservation);
         bool UpdateReservation(reservations updatedReservation);
         bool DeleteReservation(int id);
+
         string GetCustomerEmail(int customerId);
     }
 }

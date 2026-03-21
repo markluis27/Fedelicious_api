@@ -18,7 +18,6 @@ namespace Fedelicious_api.Model
         [Column("reservation_id")]
         public int? reservation_id { get; set; }
 
-
         [Required]
         [MaxLength(50)]
         [Column("payment_method")]
@@ -45,5 +44,8 @@ namespace Fedelicious_api.Model
         [Required]
         [Column("payment_date")]
         public DateTime payment_date { get; set; } = DateTime.Now;
+
+        [Column("paymentqr_id")]
+        public int? paymentqr_id { get; set; }
     }
 }

@@ -9,8 +9,7 @@ namespace Fedelicious_api.Model
     {
         [Key]
         [Column("customer_id")]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] 
-        [JsonIgnore]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int customer_id { get; set; }
 
         [Column("full_name")]
@@ -24,7 +23,7 @@ namespace Fedelicious_api.Model
         public string email { get; set; }
 
         [Column("address")]
-        public string address { get; set; }
+        public string? address { get; set; }
 
         [Column("password")]
         [Required]
@@ -32,8 +31,7 @@ namespace Fedelicious_api.Model
         public string password { get; set; }
 
         [Column("is_verified")]
-        [JsonIgnore] 
+        [JsonIgnore]
         public bool is_verified { get; set; } = false;
-
     }
 }

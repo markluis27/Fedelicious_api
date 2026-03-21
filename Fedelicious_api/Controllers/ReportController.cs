@@ -3,7 +3,6 @@ using Dapper;
 using Fedelicious_api.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
 
 namespace Fedelicious_api.Controllers
 {
@@ -17,105 +16,110 @@ namespace Fedelicious_api.Controllers
         public ReportController(IReportService reportService, IConfiguration configuration)
         {
             _reportService = reportService;
-            _connectionString = configuration.GetConnectionString("DefaultConnection");
+            _connectionString = configuration.GetConnectionString("DefaultConnection")!;
         }
 
-        // ==========================================
-        // CALL STORED PROCEDURE: SP_totalrevenvue
-        // GET: api/Report/dashboard-summary
-        // ==========================================
         [HttpGet("dashboard-summary")]
         public async Task<IActionResult> GetDashboardSummary()
         {
-            // Pag-check kung nakuha ba ang connection string
-            if (string.IsNullOrEmpty(_connectionString))
+            try
             {
-                return StatusCode(500, new { message = "Connection string 'DefaultConnection' is missing." });
+                using IDbConnection db = new SqlConnection(_connectionString);
+
+                var result = await db.QueryFirstOrDefaultAsync(
+                    "SP_totalrevenvue",
+                    commandType: CommandType.StoredProcedure
+                );
+
+                if (result == null)
+                    return NotFound(new { message = "No dashboard summary found." });
+
+                return Ok(result);
             }
-
-            using (IDbConnection db = new SqlConnection(_connectionString))
+            catch (Exception ex)
             {
-                try
-                {
-                    var result = await db.QueryFirstOrDefaultAsync("SP_totalrevenvue",
-                                 commandType: CommandType.StoredProcedure);
-
-                    if (result != null)
-                    {
-                        return Ok(result);
-                    }
-                    return NotFound(new { message = "Walang data na ibinalik ang Stored Procedure." });
-                }
-                catch (System.Exception ex)
-                {
-                    return StatusCode(500, new { message = ex.Message });
-                }
+                return StatusCode(500, new { message = "Error getting dashboard summary.", error = ex.Message });
             }
         }
 
-        // ==========================================
-        // 1. GENERATE SALES REPORT
-        // GET: api/report/sales
-        // ==========================================
         [HttpGet("sales")]
         public IActionResult GetSalesReport()
         {
-            var sales = _reportService.GetSalesHistory();
-            return Ok(new
+            try
             {
-                message = "Sales report generated successfully.",
-                data = sales
-            });
+                var sales = _reportService.GetSalesHistory();
+
+                return Ok(new
+                {
+                    message = "Sales report generated successfully.",
+                    data = sales
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error getting sales report.", error = ex.Message });
+            }
         }
 
-        // ==========================================
-        // 2. GENERATE ORDER REPORT
-        // GET: api/report/orders
-        // ==========================================
         [HttpGet("orders")]
         public IActionResult GetOrderReport()
         {
-            var orders = _reportService.GetOrderReport();
-            return Ok(new
+            try
             {
-                message = "Order report retrieved successfully.",
-                data = orders
-            });
+                var orders = _reportService.GetOrderReport();
+
+                return Ok(new
+                {
+                    message = "Order report retrieved successfully.",
+                    data = orders
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error getting order report.", error = ex.Message });
+            }
         }
 
-        // ==========================================
-        // 3. REVENUE BY CATEGORY
-        // GET: api/report/category-revenue
-        // ==========================================
         [HttpGet("category-revenue")]
         public IActionResult GetRevenueByCategory()
         {
-            var revenue = _reportService.GetRevenueByCategory();
-            return Ok(new
+            try
             {
-                message = "Revenue by category retrieved successfully.",
-                data = revenue
-            });
+                var revenue = _reportService.GetRevenueByCategory();
+
+                return Ok(new
+                {
+                    message = "Revenue by category retrieved successfully.",
+                    data = revenue
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error getting category revenue.", error = ex.Message });
+            }
         }
 
-        // ==========================================
-        // 4. DASHBOARD SUMMARY (VIA SERVICE)
-        // GET: api/report/dashboard
-        // ==========================================
         [HttpGet("dashboard")]
         public IActionResult GetDashboardStats()
         {
-            var totalSales = _reportService.GetTotalSales();
-            var totalOrders = _reportService.GetTotalOrdersCount();
-            var totalReservations = _reportService.GetTotalReservations();
-
-            return Ok(new
+            try
             {
-                message = "Dashboard statistics retrieved successfully.",
-                TotalSales = totalSales,
-                TotalOrders = totalOrders,
-                TotalReservations = totalReservations
-            });
+                var totalSales = _reportService.GetTotalSales();
+                var totalOrders = _reportService.GetTotalOrdersCount();
+                var totalReservations = _reportService.GetTotalReservations();
+
+                return Ok(new
+                {
+                    message = "Dashboard statistics retrieved successfully.",
+                    TotalSales = totalSales,
+                    TotalOrders = totalOrders,
+                    TotalReservations = totalReservations
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error getting dashboard stats.", error = ex.Message });
+            }
         }
     }
 }
