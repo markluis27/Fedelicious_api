@@ -1,8 +1,10 @@
-﻿using Fedelicious_api.Model;
+﻿using System.Data;
+using Dapper;
+using Fedelicious_api.Model;
 using Fedelicious_api.Service;
+using MailKit.Search;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Linq;
+using Microsoft.Data.SqlClient;
 
 namespace Fedelicious_api.Controllers
 {
@@ -12,122 +14,167 @@ namespace Fedelicious_api.Controllers
     {
         private readonly IOrderService _orderService;
         private readonly IEmailService _emailService;
+        private readonly string _connectionString;
 
-        public OrderController(IOrderService orderService, IEmailService emailService)
+        public OrderController(
+            IOrderService orderService,
+            IEmailService emailService,
+            IConfiguration configuration)
         {
             _orderService = orderService;
             _emailService = emailService;
+            _connectionString = configuration.GetConnectionString("DefaultConnection")!;
         }
 
-        // ==========================================
-        // 1. GET ALL ORDERS
-        // ==========================================
         [HttpGet]
         public IActionResult GetAllOrders()
         {
-            return Ok(_orderService.GetAllOrders());
+            try
+            {
+                var orders = _orderService.GetAllOrders();
+                return Ok(orders);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error getting orders.", error = ex.Message });
+            }
         }
 
-        // ==========================================
-        // 2. UPDATE STATUS WITH EMAIL (RESERVATION STYLE)
-        // ==========================================
+        [HttpGet("{id}")]
+        public IActionResult GetOrderById(int id)
+        {
+            try
+            {
+                var order = _orderService.GetOrderById(id);
+
+                if (order == null)
+                    return NotFound(new { message = "Order not found." });
+
+                return Ok(order);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error getting order.", error = ex.Message });
+            }
+        }
+
+        [HttpGet("customer/{customerId}")]
+        public IActionResult GetCustomerOrders(int customerId)
+        {
+            try
+            {
+                var orders = _orderService.GetOrdersByCustomer(customerId);
+                return Ok(orders);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error getting customer orders.", error = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult PlaceOrder([FromBody] orders newOrder)
+        {
+            try
+            {
+                if (newOrder == null)
+                    return BadRequest(new { message = "Invalid order data." });
+
+                var created = _orderService.CreateOrder(newOrder);
+
+                if (created == null)
+                    return BadRequest(new { message = "Failed to place order." });
+
+                return Ok(created);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error placing order.", error = ex.Message });
+            }
+        }
+
         [HttpPut("{id}/status")]
         public IActionResult UpdateStatus(int id, [FromBody] StatusUpdateModel model)
         {
             try
             {
-                var order = _orderService.GetOrderById(id);
-                if (order == null) return NotFound(new { message = "Order not found" });
-
-                // 1. Update sa Database
-                order.order_status = model.Status;
-                bool success = _orderService.UpdateOrder(order);
-
-                if (success)
+                if (model == null || string.IsNullOrWhiteSpace(model.Status))
                 {
-                    // 2. Email Logic - Kinopya ang flow mula sa Reservation Controller mo
-                    try
-                    {
-                        string email = _orderService.GetCustomerEmail(order.customer_id);
-
-                        if (!string.IsNullOrEmpty(email))
-                        {
-                            string subject = $"Fedelicious | Order #{order.order_id} {model.Status}";
-
-                            // Safe check para sa payment_method para hindi mag-error ang string interpolation
-                            // Gagamit tayo ng fallback value kung null ang nasa database
-                            string pMethod = "To be settled";
-                            try { pMethod = order.payment_method ?? "To be settled"; } catch { }
-
-                            string emailBody = $@"
-                                <div style='font-family: Arial, sans-serif; max-width: 600px; border: 1px solid #eee; padding: 20px; border-radius: 10px;'>
-                                    <h1 style='color: #ea5b0c; margin-bottom: 20px;'>Order Updated!</h1>
-                                    <p style='font-size: 16px; color: #333;'>Hi! Your order <strong>#{order.order_id}</strong> is now <strong>{model.Status}</strong>.</p>
-                                    <hr style='border: 0; border-top: 1px solid #eee; margin: 20px 0;'>
-                                    <p style='font-size: 15px;'><strong>Order Type:</strong> {order.order_type}</p>
-                                    <p style='font-size: 15px;'><strong>Total Amount:</strong> ₱{order.total_amount:N2}</p>
-                                    <p style='font-size: 15px;'><strong>Payment Method:</strong> {pMethod}</p>
-                                    <hr style='border: 0; border-top: 1px solid #eee; margin: 20px 0;'>
-                                    <p style='color: #666; font-style: italic;'>Thank you for choosing Fedelicious Wings!</p>
-                                </div>";
-
-                            // Ginamit ang generic Send method na working sa reservation mo
-                            _emailService.Send(email, subject, emailBody, true);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        // Kahit mag-fail ang email, updated na ang status sa DB kaya "Updated!" pa rin ang response
-                        System.Diagnostics.Debug.WriteLine("Email Fail: " + ex.Message);
-                    }
-
-                    return Ok(new { message = "Updated!" });
+                    return BadRequest(new { message = "Status is required." });
                 }
-                return BadRequest();
+
+                var order = _orderService.GetOrderById(id);
+
+                if (order == null)
+                {
+                    return NotFound(new { message = "Order not found." });
+                }
+
+                using (IDbConnection db = new SqlConnection(_connectionString))
+                {
+                    db.Execute(
+                        "sp_Orders_UpdateStatus",
+                        new
+                        {
+                            order_id = id,
+                            order_status = model.Status,
+                            confirmed_by_admin_id = model.AdminId
+                        },
+                        commandType: CommandType.StoredProcedure
+                    );
+                }
+
+                try
+                {
+                    string email = _orderService.GetCustomerEmail(order.customer_id);
+
+                    if (!string.IsNullOrWhiteSpace(email))
+                    {
+                        string subject = $"Fedelicious | Order #{order.order_id} {model.Status}";
+                        string paymentMethod = string.IsNullOrWhiteSpace(order.payment_method)
+                            ? "To be settled"
+                            : order.payment_method;
+
+                        string body = $@"
+                            <div style='font-family: Arial, sans-serif; max-width: 600px; border: 1px solid #eee; padding: 20px; border-radius: 10px;'>
+                                <h1 style='color: #ea5b0c;'>Order Updated</h1>
+                                <p>Your order <strong>#{order.order_id}</strong> is now <strong>{model.Status}</strong>.</p>
+                                <p><strong>Order Type:</strong> {order.order_type}</p>
+                                <p><strong>Total Amount:</strong> ₱{order.total_amount:N2}</p>
+                                <p><strong>Payment Method:</strong> {paymentMethod}</p>
+                            </div>";
+
+                        _emailService.Send(email, subject, body, true);
+                    }
+                }
+                catch
+                {
+                }
+
+                return Ok(new { message = "Order status updated successfully." });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return StatusCode(500, new { message = "Error updating order status.", error = ex.Message });
             }
         }
 
-        // ==========================================
-        // 3. PLACE ORDER
-        // ==========================================
-        [HttpPost]
-        public IActionResult PlaceOrder([FromBody] Orders newOrder)
-        {
-            if (newOrder == null) return BadRequest(new { message = "Invalid data" });
-            return Ok(_orderService.CreateOrder(newOrder));
-        }
-
-        // ==========================================
-        // 4. GET ORDERS BY CUSTOMER
-        // ==========================================
-        [HttpGet("customer/{customerId}")]
-        public IActionResult GetCustomerOrders(int customerId)
-        {
-            return Ok(_orderService.GetOrdersByCustomer(customerId));
-        }
-
-        // ==========================================
-        // 5. CANCEL/DELETE ORDER
-        // ==========================================
         [HttpDelete("{id}")]
         public IActionResult CancelOrder(int id)
         {
-            bool isDeleted = _orderService.DeleteOrder(id);
-            return isDeleted ? Ok(new { message = "Deleted" }) : BadRequest();
-        }
+            try
+            {
+                bool deleted = _orderService.DeleteOrder(id);
 
-        // ==========================================
-        // 6. GET ORDER BY ID
-        // ==========================================
-        [HttpGet("{id}")]
-        public IActionResult GetOrderById(int id)
-        {
-            var order = _orderService.GetOrderById(id);
-            return order == null ? NotFound() : Ok(order);
+                if (!deleted)
+                    return BadRequest(new { message = "Failed to delete order." });
+
+                return Ok(new { message = "Order deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error deleting order.", error = ex.Message });
+            }
         }
     }
 

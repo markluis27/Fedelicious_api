@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
-using System.Linq;
 using System.Reflection;
 using Dapper;
 using Microsoft.Data.SqlClient;
@@ -12,10 +9,17 @@ namespace Fedelicious_api.Repository
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        private readonly string _connectionString =
-            "Server=LAPTOP-OU71PFMJ\\SQLEXPRESS;Database=Fedelicious;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;";
+        private readonly string _connectionString;
 
-        private IDbConnection CreateConnection() => new SqlConnection(_connectionString);
+        public GenericRepository(IConfiguration configuration)
+        {
+            _connectionString = configuration.GetConnectionString("DefaultConnection")!;
+        }
+
+        private IDbConnection CreateConnection()
+        {
+            return new SqlConnection(_connectionString);
+        }
 
         public IEnumerable<T> GetAll()
         {
@@ -29,47 +33,49 @@ namespace Fedelicious_api.Repository
         {
             using var connection = CreateConnection();
             string tableName = GetTableName();
-            string keyName = GetKeyColumnName();
-            string query = $"SELECT * FROM {tableName} WHERE {keyName} = @Id";
+            string keyColumn = GetKeyColumnName();
+            string query = $"SELECT * FROM {tableName} WHERE [{keyColumn}] = @Id";
             return connection.QueryFirstOrDefault<T>(query, new { Id = id });
         }
 
         public bool Add(T entity)
         {
             using var connection = CreateConnection();
-            var tableName = GetTableName();
+            string tableName = GetTableName();
 
-            var props = typeof(T).GetProperties().Where(p => {
-                var isKey = p.GetCustomAttribute<KeyAttribute>() != null;
-                var isIdentity = p.GetCustomAttribute<DatabaseGeneratedAttribute>()?.DatabaseGeneratedOption == DatabaseGeneratedOption.Identity;
+            var props = typeof(T).GetProperties().Where(p =>
+            {
+                var keyAttr = p.GetCustomAttribute<KeyAttribute>();
+                var dbGenerated = p.GetCustomAttribute<DatabaseGeneratedAttribute>();
 
-                // Return true only if it's a simple property and NOT an identity key
-                return (!isKey || !isIdentity) &&
-                       (p.PropertyType.IsPrimitive ||
-                        p.PropertyType == typeof(string) ||
-                        p.PropertyType == typeof(decimal) ||
-                        p.PropertyType == typeof(DateTime) ||
-                        p.PropertyType == typeof(int?) ||
-                        p.PropertyType == typeof(TimeSpan?));
+                bool isIdentityKey = keyAttr != null &&
+                                     dbGenerated != null &&
+                                     dbGenerated.DatabaseGeneratedOption == DatabaseGeneratedOption.Identity;
+
+                return !isIdentityKey && IsAllowedType(p.PropertyType);
             }).ToList();
 
-            var columns = string.Join(", ", props.Select(p => $"[{p.GetCustomAttribute<ColumnAttribute>()?.Name ?? p.Name}]"));
+            var columns = string.Join(", ", props.Select(p => $"[{GetColumnName(p)}]"));
             var values = string.Join(", ", props.Select(p => "@" + p.Name));
 
-            string query = $@"INSERT INTO {tableName} ({columns}) VALUES ({values}); 
-                             SELECT CAST(SCOPE_IDENTITY() as int);";
+            string query = $@"
+                INSERT INTO {tableName} ({columns})
+                VALUES ({values});
+                SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
             try
             {
-                var newId = connection.QuerySingle<int>(query, entity);
-                if (newId > 0)
+                int newId = connection.QuerySingle<int>(query, entity);
+
+                var keyProp = typeof(T).GetProperties()
+                    .FirstOrDefault(p => p.GetCustomAttribute<KeyAttribute>() != null);
+
+                if (keyProp != null && keyProp.CanWrite && keyProp.PropertyType == typeof(int))
                 {
-                    var keyProp = typeof(T).GetProperties()
-                        .FirstOrDefault(p => p.GetCustomAttribute<KeyAttribute>() != null);
-                    if (keyProp != null) keyProp.SetValue(entity, newId);
-                    return true;
+                    keyProp.SetValue(entity, newId);
                 }
-                return false;
+
+                return newId > 0;
             }
             catch (Exception ex)
             {
@@ -82,10 +88,11 @@ namespace Fedelicious_api.Repository
         {
             using var connection = CreateConnection();
             string tableName = GetTableName();
-            string keyName = GetKeyColumnName();
+            string keyColumn = GetKeyColumnName();
+            string keyProperty = GetKeyPropertyName();
             string setClause = GetUpdateSetClause();
 
-            string query = $"UPDATE {tableName} SET {setClause} WHERE {keyName} = @{keyName}";
+            string query = $"UPDATE {tableName} SET {setClause} WHERE [{keyColumn}] = @{keyProperty}";
 
             try
             {
@@ -94,7 +101,7 @@ namespace Fedelicious_api.Repository
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("Repository Update Error: " + ex.Message);
-                throw; // Rethrow para makita ang Foreign Key error sa Controller catch block
+                throw;
             }
         }
 
@@ -102,15 +109,16 @@ namespace Fedelicious_api.Repository
         {
             using var connection = CreateConnection();
             string tableName = GetTableName();
-            string keyName = GetKeyColumnName();
+            string keyColumn = GetKeyColumnName();
 
-            string query = $"DELETE FROM {tableName} WHERE {keyName} = @id";
-            return connection.Execute(query, new { id = id }) > 0;
+            string query = $"DELETE FROM {tableName} WHERE [{keyColumn}] = @id";
+            return connection.Execute(query, new { id }) > 0;
         }
 
-        // ======================
-        // HELPERS
-        // ======================
+        public void Delete(string token)
+        {
+            throw new NotImplementedException();
+        }
 
         private string GetTableName()
         {
@@ -123,24 +131,45 @@ namespace Fedelicious_api.Repository
         {
             var prop = typeof(T).GetProperties()
                 .FirstOrDefault(p => p.GetCustomAttribute<KeyAttribute>() != null);
+
+            if (prop == null) return "id";
+
+            return GetColumnName(prop);
+        }
+
+        private string GetKeyPropertyName()
+        {
+            var prop = typeof(T).GetProperties()
+                .FirstOrDefault(p => p.GetCustomAttribute<KeyAttribute>() != null);
+
             return prop != null ? prop.Name : "id";
+        }
+
+        private string GetColumnName(PropertyInfo property)
+        {
+            return property.GetCustomAttribute<ColumnAttribute>()?.Name ?? property.Name;
         }
 
         private string GetUpdateSetClause()
         {
             var properties = typeof(T).GetProperties().Where(p =>
                 p.GetCustomAttribute<KeyAttribute>() == null &&
-                (p.PropertyType.IsPrimitive || p.PropertyType == typeof(string) || p.PropertyType == typeof(decimal) || p.PropertyType == typeof(DateTime) || p.PropertyType == typeof(int?)));
+                IsAllowedType(p.PropertyType));
 
-            return string.Join(", ", properties.Select(p => {
-                var colName = p.GetCustomAttribute<ColumnAttribute>()?.Name ?? p.Name;
-                return $"[{colName}] = @{p.Name}";
-            }));
+            return string.Join(", ", properties.Select(p => $"[{GetColumnName(p)}] = @{p.Name}"));
         }
 
-        public void Delete(string token)
+        private bool IsAllowedType(Type type)
         {
-            throw new NotImplementedException();
+            type = Nullable.GetUnderlyingType(type) ?? type;
+
+            return type == typeof(string) ||
+                   type == typeof(int) ||
+                   type == typeof(decimal) ||
+                   type == typeof(bool) ||
+                   type == typeof(DateTime) ||
+                   type == typeof(TimeSpan) ||
+                   type == typeof(byte[]);
         }
     }
 }

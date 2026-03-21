@@ -6,7 +6,6 @@ namespace Fedelicious_api.Service
     {
         bool SubmitGcashPayment(payments newPayment);
         payments GetPaymentByOrderId(int orderId);
-        payments GetPaymentByReservationId(int resId);
-
+        payments GetPaymentByReservationId(int reservationId);
     }
 }

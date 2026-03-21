@@ -8,15 +8,20 @@ namespace Fedelicious_api.Model
     {
         [Key]
         [Column("paymentqr_id")]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int paymentqr_id { get; set; }
 
-        [Column("qr_name")]
         [Required]
+        [Column("qr_name")]
+        [MaxLength(100)]
         public string qr_name { get; set; }
 
-        [Column("qr_image")]
         [Required]
+        [Column("qr_accname")]
+        [MaxLength(150)]
+        public string qr_accname { get; set; }
+
+        [Required]
+        [Column("qr_image")]
         public byte[] qr_image { get; set; }
 
         [Column("is_active")]
