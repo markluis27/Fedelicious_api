@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fedelicious | Menu</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{
+    --bg-dark: #05110d; 
+    --accent-orange: #ea5b0c; 
+    --card-bg: #09261c; 
+    --item-bg: #0b2e23;
+    --text-light: #fff; 
+    --text-muted: #a3b8b0;
+}
+
+body { 
+    margin:0; 
+    padding:0; 
+    font-family:'Poppins', sans-serif; 
+    background:var(--bg-dark); 
+    color:var(--text-light); 
+    -webkit-font-smoothing: antialiased;
+}
+
+nav {
+    display:flex; 
+    justify-content:space-between; 
+    align-items:center; 
+    padding:18px 60px;
+    background: rgba(5, 17, 13, 0.9); 
+    position:sticky; 
+    top:0; 
+    backdrop-filter: blur(15px); 
+    z-index:1000; 
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.logo { font-weight:700; font-size:1.6rem; letter-spacing:1px; color: white; text-decoration: none; display: flex; align-items: center; }
+.logo span { background:var(--accent-orange); padding:4px 10px; border-radius:6px; margin-right:8px; font-size: 1.2rem; }
+
+.nav-links { display:flex; align-items:center; gap:30px; }
+.nav-links a { 
+    color:var(--text-muted); 
+    text-decoration:none; 
+    font-size:0.85rem; 
+    font-weight:600; 
+    text-transform:uppercase; 
+    letter-spacing: 1px;
+    transition:0.3s ease; 
+}
+.nav-links a.active, .nav-links a:hover { color:var(--accent-orange); }
+
+.user-controls {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+#cart-icon { 
+    position:relative; 
+    cursor:pointer; 
+    font-size:1.4rem; 
+    color: var(--text-light);
+    text-decoration: none;
+    transition: transform 0.2s;
+}
+
+#cart-count { 
+    position:absolute; 
+    top:-5px; 
+    right:-10px; 
+    background:var(--accent-orange); 
+    color:white; 
+    font-size:0.7rem; 
+    font-weight:700; 
+    border-radius:50%; 
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#user-display-section a, #user-display-section span { 
+    color:var(--accent-orange); 
+    text-decoration:none; 
+    font-size:0.9rem; 
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.hero-header { text-align:center; padding:60px 20px 20px; }
+.hero-header h1 { 
+    font-family:'Playfair Display', serif; 
+    font-size:4rem; 
+    margin:0; 
+    letter-spacing: -1px;
+}
+.hero-header p { 
+    color:var(--accent-orange); 
+    letter-spacing:3px; 
+    font-weight:700; 
+    font-size:0.75rem; 
+    text-transform:uppercase; 
+    margin-top:10px; 
+}
+
+.categories { 
+    display:flex; 
+    justify-content:center; 
+    flex-wrap:wrap; 
+    gap:12px; 
+    margin:30px auto 50px; 
+    max-width: 900px;
+}
+.cat-pill { 
+    padding:10px 24px; 
+    border:1px solid rgba(163,184,176,0.2); 
+    border-radius:30px; 
+    font-size:0.7rem; 
+    font-weight:600; 
+    color:var(--text-muted); 
+    cursor:pointer; 
+    transition:all 0.3s ease; 
+    text-transform:uppercase; 
+}
+.cat-pill.active { 
+    background:var(--accent-orange); 
+    border-color:var(--accent-orange); 
+    color:white; 
+}
+
+.container { display:flex; justify-content:center; padding:0 60px 60px; }
+.menu-grid { 
+    display:grid; 
+    grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); 
+    gap:30px; 
+    width:100%; 
+    max-width: 1200px;
+}
+
+.menu-card { 
+    background:var(--item-bg); 
+    border-radius:24px; 
+    overflow:hidden; 
+    transition:all 0.4s ease; 
+    position:relative; 
+    border: 1px solid rgba(255,255,255,0.03);
+}
+.menu-card:hover { transform:translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+.menu-card img { width:100%; height:180px; object-fit:cover; }
+
+.price-tag { 
+    position:absolute; 
+    top:15px; 
+    right:15px; 
+    background:var(--accent-orange); 
+    padding:5px 12px; 
+    border-radius:12px; 
+    font-size:0.85rem; 
+    font-weight:700; 
+}
+
+.menu-info { padding:25px; text-align:left; }
+.menu-info h4 { margin:0 0 10px; font-size:1.2rem; font-weight: 600; }
+.menu-info p { 
+    color:var(--text-muted); 
+    font-size:0.8rem; 
+    margin-bottom:20px; 
+    line-height:1.5; 
+    height: 48px; 
+    overflow: hidden;
+}
+
+.btn-add { 
+    width:100%; 
+    background:rgba(255,255,255,0.05); 
+    border:1px solid rgba(163,184,176,0.2); 
+    color:var(--text-light); 
+    padding:12px; 
+    border-radius:12px; 
+    font-weight:600; 
+    cursor:pointer; 
+    transition:0.3s; 
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+.btn-add:hover { background:var(--accent-orange); border-color:var(--accent-orange); }
+
+@media (max-width: 768px) {
+    nav { padding: 15px 20px; }
+    .hero-header h1 { font-size: 2.5rem; }
+    .container { padding: 0 20px 40px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+    <a href="index.html" class="logo"><span>F</span> Fedelicious</a>
+    <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="menu.html" class="active">Menu</a>
+        <a href="reservation.html">Reservation</a>
+        <a href="orders.html">History</a>
+    </div>
+    
+    <div class="user-controls">
+        <a href="cart.html" id="cart-icon">🛒<span id="cart-count">0</span></a>
+        <div id="user-display-section"><a href="account.html">👤 Account</a></div>
+    </div>
+</nav>
+
+<div class="hero-header">
+    <h1>Our Gallery</h1>
+    <p>Select from our categories</p>
+</div>
+
+<div class="categories" id="categories">
+    </div>
+
+<div class="container">
+    <div class="menu-grid" id="menu-container">
+        </div>
+</div>
+
+<script>
+const API_BASE = 'https://localhost:7201/api/Menu';
+let cart = [];
+
+document.addEventListener('DOMContentLoaded', async () => {
+    // 1. Setup User info in Navbar
+    const fullName = localStorage.getItem("fullName");
+    const customerId = localStorage.getItem("customer_id");
+    const navUser = document.getElementById("user-display-section");
+    if(fullName && customerId){
+        // Change text to show name, but keep the link going to account.html
+        navUser.innerHTML = `<a href="account.html">Hi, ${fullName.split(' ')[0]} 👤</a>`;
+    }
+
+    // 2. Setup Cart
+    const savedCart = localStorage.getItem("cart");
+    if(savedCart) cart = JSON.parse(savedCart);
+    updateCartCount();
+
+    // 3. Load UI Data
+    await loadCategories();
+    await loadMenu(0); // Load "All Items" by default
+});
+
+// Category loader
+async function loadCategories(){
+    try{
+        const res = await fetch(`${API_BASE}/categories`);
+        const categories = await res.json();
+        const container = document.getElementById('categories');
+        
+        // Render buttons
+        let html = `<button class="cat-pill active" data-id="0" onclick="handleCategoryClick(this, 0)">All Items</button>`;
+        categories.forEach(c => {
+            html += `<button class="cat-pill" data-id="${c.category_id}" onclick="handleCategoryClick(this, ${c.category_id})">${c.category_name}</button>`;
+        });
+        
+        container.innerHTML = html;
+    } catch(err){
+        console.error(err);
+        document.getElementById('categories').innerHTML = '<button class="cat-pill active">All Items</button>';
+    }
+}
+
+// Function to handle clicking on a category button
+function handleCategoryClick(buttonElement, categoryId) {
+    // Tanggalin ang 'active' class sa lahat ng buttons
+    const allPills = document.querySelectorAll('.cat-pill');
+    allPills.forEach(p => p.classList.remove('active'));
+    
+    // Idagdag ang 'active' class sa pinindot
+    buttonElement.classList.add('active');
+
+    // I-load ang menus para sa category na ito
+    loadMenu(categoryId);
+}
+
+// Menu loader (Handles both 'All' and specific categories)
+async function loadMenu(categoryId){
+    const container = document.getElementById("menu-container");
+    container.innerHTML = `<p style="grid-column:1/-1; text-align:center; color:var(--text-muted)">Loading menu...</p>`;
+
+    try{
+        // Kung 0 ang id, tatawagin niya ang GET ALL. Kung hindi, GET BY CATEGORY.
+        const url = (categoryId === 0) ? API_BASE : `${API_BASE}/category/${categoryId}`;
+        const res = await fetch(url);
+        const menuItems = await res.json();
+        
+        displayMenu(menuItems);
+    } catch(err){
+        console.error(err);
+        container.innerHTML = `<p style="grid-column:1/-1; text-align:center; color:#ff4d4d">Failed to load menu from server.</p>`;
+    }
+}
+
+// Render Menu Cards
+function displayMenu(items){
+    const container = document.getElementById("menu-container");
+    
+    if(!items || items.length === 0){
+        container.innerHTML = `<p style="grid-column:1/-1; text-align:center; color:var(--text-muted)">No items found in this category.</p>`;
+        return;
+    }
+
+    container.innerHTML = items.map(item => {
+        // Fallback data if API fields are missing
+        const price = item.price ? item.price.toFixed(0) : "0";
+        const name = item.food_name || item.name || "Unknown Item";
+        const desc = item.description || 'Signature Fedelicious special dish.';
+        
+        // Handle image based on your database structure (base64 vs URL)
+        let imgSrc = 'https://via.placeholder.com/300x200?text=Food';
+        if (item.image) {
+            imgSrc = item.image.startsWith('data:') ? item.image : `data:image/jpeg;base64,${item.image}`;
+        } else if (item.picture) {
+            imgSrc = item.picture.startsWith('data:') ? item.picture : `data:image/jpeg;base64,${item.picture}`;
+        }
+
+        return `
+        <div class="menu-card">
+            <div class="price-tag">₱${price}</div>
+            <img src="${imgSrc}" alt="${name}">
+            <div class="menu-info">
+                <h4>${name}</h4>
+                <p>${desc}</p>
+                <button class="btn-add" onclick="addToCart(${item.menu_id}, '${name}', ${price})">+ ADD TO CART</button>
+            </div>
+        </div>
+        `;
+    }).join('');
+}
+
+// Cart Logic
+function addToCart(id, name, price){
+    const customerId = localStorage.getItem("customer_id") || localStorage.getItem("customerId"); // Handle both possible variable names
+    
+    if(!customerId){ 
+        alert("Please login to add items to your cart!"); 
+        window.location.href="login.html"; 
+        return; 
+    }
+
+    const existing = cart.find(i => i.id === id);
+    if(existing) {
+        existing.qty++;
+    } else {
+        cart.push({ id, name, price: parseFloat(price), qty: 1 });
+    }
+    
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartCount();
+    
+    // Optional: Small visual feedback
+    const btn = event.target;
+    btn.innerHTML = "✔ ADDED";
+    btn.style.background = "var(--accent-orange)";
+    setTimeout(() => {
+        btn.innerHTML = "+ ADD TO CART";
+        btn.style.background = "rgba(255,255,255,0.05)";
+    }, 1000);
+}
+
+function updateCartCount(){
+    const countEl = document.getElementById("cart-count");
+    const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+    countEl.innerText = totalQty;
+}
+</script>
+</body>
+</html>
