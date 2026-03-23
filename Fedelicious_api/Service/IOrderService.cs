@@ -6,19 +6,19 @@ namespace Fedelicious_api.Service
     public interface IOrderService
     {
         // Admin - get all orders
-        IEnumerable<Orders> GetAllOrders();
+        IEnumerable<orders> GetAllOrders();
 
         // Customer - view their own orders
-        IEnumerable<Orders> GetOrdersByCustomer(int customerId);
+        IEnumerable<orders> GetOrdersByCustomer(int customerId);
 
         // Get specific order
-        Orders GetOrderById(int id);
+        orders GetOrderById(int id);
 
         // Place order - Ngayon ay nag-re-return na ng mismong object
-        Orders CreateOrder(Orders newOrder);
+        orders CreateOrder(orders newOrder);
 
         // Update order status
-        bool UpdateOrder(Orders updatedOrder);
+        bool UpdateOrder(orders updatedOrder);
 
         // Cancel order
         bool DeleteOrder(int id);

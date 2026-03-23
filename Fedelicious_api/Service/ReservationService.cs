@@ -30,17 +30,24 @@ namespace Fedelicious_api.Service
 
         public IEnumerable<reservations> GetReservationsByCustomer(int customerId)
         {
-            return _reservationRepo.GetAll().Where(r => r.customer_id == customerId);
+            return _reservationRepo.GetAll()
+                .Where(r => r.customer_id == customerId);
         }
 
-        public reservations CreateReservation(reservations res)
+        public reservations CreateReservation(reservations newReservation)
         {
-            bool isAdded = _reservationRepo.Add(res);
-            return isAdded ? res : null;
+            if (newReservation == null) return null;
+
+            if (string.IsNullOrWhiteSpace(newReservation.reservation_status))
+                newReservation.reservation_status = "Pending";
+
+            bool added = _reservationRepo.Add(newReservation);
+            return added ? newReservation : null;
         }
 
         public bool UpdateReservation(reservations updatedReservation)
         {
+            if (updatedReservation == null) return false;
             return _reservationRepo.Update(updatedReservation);
         }
 

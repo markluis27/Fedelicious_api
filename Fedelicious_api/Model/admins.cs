@@ -25,8 +25,8 @@ namespace Fedelicious_api.Model
         [Required]
         [MaxLength(255)]
         public string password { get; set; }
-        [Column("role")]
-        public string role { get; set; }
 
+        [Column("role")]
+        public string? role { get; set; }
     }
 }
