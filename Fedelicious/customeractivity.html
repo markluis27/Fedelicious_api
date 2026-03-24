@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fedelicious | Customer Intelligence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-green: #b2eec7;
+            --sidebar-green: #98d8aa;
+            --card-bg: #ffffff;
+            --accent-red: #ff5c5c;
+            --text-dark: #2c3e50;
+            --text-muted: #7f8c8d;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--primary-green); display: flex; height: 100vh; overflow: hidden; color: var(--text-dark); }
+
+        /* SIDEBAR */
+        .sidebar { width: 260px; background-color: var(--sidebar-green); padding: 30px 20px; display: flex; flex-direction: column; }
+        .sidebar h2 { font-weight: 800; font-size: 1.2rem; margin-bottom: 40px; }
+        .nav-link { display: flex; align-items: center; gap: 15px; padding: 12px 15px; text-decoration: none; color: inherit; font-size: 0.9rem; font-weight: 600; border-radius: 10px; margin-bottom: 5px; transition: 0.3s; }
+        .nav-link.active { background-color: #27ae60; color: white; }
+        .nav-link:hover:not(.active) { background: rgba(255,255,255,0.3); }
+
+        /* MAIN CONTENT */
+        .main-content { flex-grow: 1; padding: 30px; overflow-y: auto; background: #e8f5e9; border-top-left-radius: 40px; border-bottom-left-radius: 40px; }
+        
+        .header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px; }
+        .header h1 { font-size: 1.6rem; font-weight: 800; text-transform: uppercase; }
+        
+        /* SEARCH & DATE FILTERS */
+        .filter-bar { background: white; padding: 15px 25px; border-radius: 15px; display: flex; align-items: center; gap: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 25px; flex-wrap: wrap; }
+        .search-box { flex-grow: 1; position: relative; }
+        .search-box input { width: 100%; padding: 12px 15px 12px 40px; border: 1px solid #ddd; border-radius: 10px; font-family: 'Poppins'; font-size: 0.95rem; outline: none; cursor: pointer; }
+        .search-box i { position: absolute; left: 15px; top: 15px; color: #999; }
+        
+        .date-box { display: flex; align-items: center; gap: 10px; }
+        .date-box input { padding: 10px 15px; border: 1px solid #ddd; border-radius: 10px; font-family: 'Poppins'; outline: none; color: var(--text-dark); font-weight: 600; cursor: pointer;}
+        .btn-action { padding: 10px 25px; background: #27ae60; color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: 0.2s; font-family: 'Poppins'; }
+        .btn-action:hover { background: #219653; }
+
+        /* GRID LAYOUTS */
+        .top-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); display: flex; flex-direction: column; }
+        .card-header { font-size: 0.9rem; font-weight: 700; color: var(--text-muted); margin-bottom: 15px; text-transform: uppercase; display: flex; justify-content: space-between; }
+        
+        /* PROFILE DATA */
+        .profile-hero { text-align: center; margin-bottom: 20px; }
+        .profile-avatar { width: 70px; height: 70px; background: var(--primary-green); color: #27ae60; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 10px; }
+        .profile-hero h2 { font-size: 1.4rem; color: var(--text-dark); }
+        .profile-hero p { font-size: 0.85rem; color: var(--text-muted); }
+
+        .stat-row { display: flex; justify-content: space-between; border-bottom: 1px dashed #eee; padding: 10px 0; font-size: 0.9rem; }
+        .stat-row:last-child { border: none; }
+        .stat-label { font-weight: 600; color: var(--text-muted); }
+        .stat-value { font-weight: 700; color: var(--text-dark); }
+
+        /* TABLES */
+        .table-container { background: white; border-radius: 20px; padding: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); margin-bottom: 20px; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { padding: 12px 15px; font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); border-bottom: 2px solid #eee; }
+        td { padding: 15px; font-size: 0.9rem; border-bottom: 1px solid #f9f9f9; font-weight: 600; color: var(--text-dark); }
+        tr:hover td { background-color: #f4fbf6; }
+
+        .badge { padding: 5px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+        .bg-pending { background: #fff3cd; color: #856404; }
+        .bg-success { background: #d4edda; color: #155724; }
+
+        .empty-state { text-align: center; padding: 40px; color: var(--text-muted); font-style: italic; }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <h2>FEDELICIOUS</h2>
+        <nav>
+            <a href="admin.html" class="nav-link"><i class="fas fa-th-large"></i> DASHBOARD</a>
+            <a href="order_admin.html" class="nav-link"><i class="fas fa-shopping-cart"></i> ORDERS</a>
+            <a href="reservation_admin.html" class="nav-link"><i class="fas fa-calendar-alt"></i> RESERVATIONS</a>
+            <a href="menusetting.html" class="nav-link"><i class="fas fa-utensils"></i> MENU SETTINGS</a>
+            <a href="salesreport.html" class="nav-link"><i class="fas fa-chart-line"></i> SALES REPORTS</a>
+            <a href="customeractivity.html" class="nav-link active"><i class="fas fa-users"></i> CUSTOMERS</a>
+            <a href="admin_management.html" class="nav-link" id="superAdminLink"><i class="fas fa-user-shield"></i> SYSTEM ADMINS</a>
+        </nav>
+        <a href="#" style="margin-top:auto; color: #e74c3c;" class="nav-link" onclick="logout()"><i class="fas fa-sign-out-alt"></i> SIGN OUT</a>
+    </aside>
+
+    <main class="main-content">
+        <div class="header">
+            <div>
+                <h1>Customer Intelligence</h1>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Analyze ordering behavior and reservation history</p>
+            </div>
+        </div>
+
+        <div class="filter-bar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" list="customerList" placeholder="Search or select a customer..." autocomplete="off">
+                
+                <datalist id="customerList"></datalist>
+            </div>
+            <div class="date-box">
+                <input type="date" id="startDate" title="Start Date">
+                <span style="color: #ccc;">to</span>
+                <input type="date" id="endDate" title="End Date">
+                <button class="btn-action" onclick="loadAllData()">Analyze</button>
+            </div>
+        </div>
+
+        <div class="top-grid">
+            <div class="card">
+                <div class="card-header"><span><i class="fas fa-id-card"></i> Customer Overview</span></div>
+                <div class="profile-hero">
+                    <div class="profile-avatar"><i class="fas fa-user"></i></div>
+                    <h2 id="prof-name">---</h2>
+                    <p id="prof-email">---</p>
+                </div>
+                
+                <div class="stat-row">
+                    <span class="stat-label">Confirmed Reservations</span>
+                    <span class="stat-value" id="prof-confirmed">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Cancelled Reservations</span>
+                    <span class="stat-value" style="color: var(--accent-red);" id="prof-cancelled">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Total Lifetime Guests</span>
+                    <span class="stat-value" id="prof-guests">0</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><span><i class="fas fa-chart-pie"></i> Ordering Behavior</span></div>
+                
+                <div style="background: #f4fbf6; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                    <div class="stat-row" style="border: none; padding: 0 0 5px 0;">
+                        <span class="stat-label" style="color: #27ae60;">Date Range Orders</span>
+                        <span class="stat-value" id="range-orders" style="font-size: 1.2rem; color: #27ae60;">0</span>
+                    </div>
+                    <p style="font-size: 0.75rem; color: #666; font-style: italic;">Orders placed between selected dates.</p>
+                </div>
+
+                <div class="stat-row">
+                    <span class="stat-label">First Order ID (Pioneer)</span>
+                    <span class="stat-value" id="stat-min-order">---</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Latest Order ID</span>
+                    <span class="stat-value" id="stat-max-order">---</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Largest Group Booking</span>
+                    <span class="stat-value" id="stat-max-guest">0 guests</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Smallest Group Booking</span>
+                    <span class="stat-value" id="stat-min-guest">0 guests</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="card-header"><span><i class="fas fa-receipt"></i> Payment Settlement Report</span></div>
+            <table id="paymentTable">
+                <thead>
+                    <tr>
+                        <th>Order Total</th>
+                        <th>Amount Paid</th>
+                        <th>Settlement Status</th>
+                    </tr>
+                </thead>
+                <tbody id="paymentBody">
+                    <tr><td colspan="3" class="empty-state">Load a customer to view payment history</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-container">
+            <div class="card-header"><span><i class="fas fa-calendar-check"></i> Reservation History List</span></div>
+            <table id="resTable">
+                <thead>
+                    <tr>
+                        <th>Date & Time</th>
+                        <th>Expected Guests</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="resBody">
+                    <tr><td colspan="3" class="empty-state">Load a customer to view reservation history</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+    </main>
+
+    <script>
+        const API_BASE = "https://localhost:7201/api/Sp";
+
+        // Helper to format dates to YYYY-MM-DD for inputs
+        const formatDate = (date) => date.toISOString().split('T')[0];
+
+        async function safeFetch(endpoint) {
+            try {
+                const response = await fetch(endpoint);
+                if (!response.ok) return null;
+                return await response.json();
+            } catch (err) {
+                console.warn(`API Error on ${endpoint}`);
+                return null;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Set default dates (Start of year to Today)
+            const today = new Date();
+            const startYear = new Date(today.getFullYear(), 0, 1);
+            
+            document.getElementById('startDate').value = formatDate(startYear);
+            document.getElementById('endDate').value = formatDate(today);
+
+            // Populate the Customer Dropdown Search Bar automatically
+            await populateCustomerList();
+        });
+
+        // Fetches all customers and adds them to the datalist
+        async function populateCustomerList() {
+            // We can use pioneer-stats to easily get all unique names
+            const data = await safeFetch(`${API_BASE}/activity/pioneer-stats`);
+            if (data && data.length > 0) {
+                const datalist = document.getElementById('customerList');
+                // Extract unique full names to prevent duplicates
+                const uniqueNames = [...new Set(data.map(item => item.full_name))];
+                
+                datalist.innerHTML = uniqueNames.map(name => `<option value="${name}">`).join('');
+            }
+        }
+
+        // Trigger 'Analyze' automatically when someone selects a name from the dropdown
+        document.getElementById('searchInput').addEventListener('change', () => {
+            if (document.getElementById('searchInput').value.trim() !== "") {
+                loadAllData();
+            }
+        });
+
+        async function loadAllData() {
+            const name = document.getElementById('searchInput').value.trim();
+            const start = document.getElementById('startDate').value;
+            const end = document.getElementById('endDate').value;
+
+            if (!name) { alert("Please enter or select a customer name."); return; }
+
+            // Fire all API requests simultaneously for speed
+            const [fullProfile, pioneerStats, custSummary, rangeOrders, payReport, resList] = await Promise.all([
+                safeFetch(`${API_BASE}/activity/full-profile?name=${encodeURIComponent(name)}`),
+                safeFetch(`${API_BASE}/activity/pioneer-stats`),
+                safeFetch(`${API_BASE}/activity/summary?name=${encodeURIComponent(name)}`),
+                safeFetch(`${API_BASE}/sales/filter-date?start=${start}&end=${end}`),
+                safeFetch(`${API_BASE}/activity/payment-report?name=${encodeURIComponent(name)}`),
+                safeFetch(`${API_BASE}/activity/list-reservations?name=${encodeURIComponent(name)}`)
+            ]);
+
+            populateOverview(fullProfile, name);
+            populateBehavior(pioneerStats, custSummary, rangeOrders, name);
+            populatePaymentTable(payReport);
+            populateReservationTable(resList);
+        }
+
+        function populateOverview(data, searchName) {
+            if (data && data.length > 0) {
+                const profile = data[0];
+                document.getElementById('prof-name').innerText = profile.full_name;
+                document.getElementById('prof-email').innerText = profile.email || "No email registered";
+                document.getElementById('prof-confirmed').innerText = profile.confirmed_reservations || 0;
+                document.getElementById('prof-cancelled').innerText = profile.cancelled_reservations || 0;
+                document.getElementById('prof-guests').innerText = profile.total_guests || 0;
+            } else {
+                document.getElementById('prof-name').innerText = searchName;
+                document.getElementById('prof-email').innerText = "Not Found / No Data";
+                document.getElementById('prof-confirmed').innerText = "0";
+                document.getElementById('prof-cancelled').innerText = "0";
+                document.getElementById('prof-guests').innerText = "0";
+            }
+        }
+
+        function populateBehavior(pioneer, summary, range, searchName) {
+            if (pioneer && pioneer.length > 0) {
+                const pData = pioneer.find(p => p.full_name.toLowerCase() === searchName.toLowerCase());
+                document.getElementById('stat-min-order').innerText = pData ? `#${pData.MinOrder}` : "N/A";
+                document.getElementById('stat-max-order').innerText = pData ? `#${pData.MaxOrder}` : "N/A";
+            }
+
+            if (summary && summary.length > 0) {
+                document.getElementById('stat-max-guest').innerText = `${summary[0].largest_reservation} guests`;
+                document.getElementById('stat-min-guest').innerText = `${summary[0].smallest_reservation} guests`;
+            } else {
+                document.getElementById('stat-max-guest').innerText = "N/A";
+                document.getElementById('stat-min-guest').innerText = "N/A";
+            }
+
+            if (range && range.length > 0) {
+                const rData = range.find(r => r.full_name.toLowerCase() === searchName.toLowerCase());
+                document.getElementById('range-orders').innerText = rData ? rData.total_orders : "0";
+            } else {
+                document.getElementById('range-orders').innerText = "0";
+            }
+        }
+
+        function populatePaymentTable(data) {
+            const tbody = document.getElementById('paymentBody');
+            tbody.innerHTML = "";
+
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" class="empty-state">No payment records found for this user.</td></tr>`;
+                return;
+            }
+
+            data.forEach(p => {
+                const statusClass = p.payment_status === 'Fully Paid' ? 'bg-success' : 'bg-pending';
+                tbody.innerHTML += `
+                    <tr>
+                        <td>₱${Number(p.order_total).toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                        <td style="color:#27ae60;">₱${Number(p.total_paid).toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                        <td><span class="badge ${statusClass}">${p.payment_status}</span></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function populateReservationTable(data) {
+            const tbody = document.getElementById('resBody');
+            tbody.innerHTML = "";
+
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" class="empty-state">No reservation history found.</td></tr>`;
+                return;
+            }
+
+            data.forEach(r => {
+                const dateStr = new Date(r.reservation_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+                const statusClass = r.reservation_status === 'Confirmed' ? 'bg-success' : 'bg-pending';
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td>
+                            <div><i class="far fa-calendar-alt"></i> ${dateStr}</div>
+                            <div style="font-size:0.75rem; color:#888; margin-top:3px;"><i class="far fa-clock"></i> ${r.reservation_time}</div>
+                        </td>
+                        <td><i class="fas fa-user-friends" style="color:#98d8aa;"></i> ${r.max_guests} pax</td>
+                        <td><span class="badge ${statusClass}">${r.reservation_status}</span></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function logout() { localStorage.clear(); window.location.href = "login.html"; }
+        document.addEventListener('DOMContentLoaded', () => {
+        // SECURITY UI: Hide 'System Admins' menu item if the user is a regular Admin
+        const role = localStorage.getItem("role");
+        const superAdminLink = document.getElementById("superAdminLink");
+        
+        if (role !== "Super Admin" && superAdminLink) {
+            superAdminLink.style.display = "none";
+        }
+    });
+    </script>
+</body>
+</html>
