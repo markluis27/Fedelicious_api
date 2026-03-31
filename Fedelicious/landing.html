@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fedelicious | Crafting Flavor</title>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="brand">
+                <div class="brand-icon">
+                    <img src="images/fede.png" alt="Logo">
+                </div>
+                <span class="brand-name">Fedelicious</span>
+            </div>
+
+            <ul class="nav-links">
+                <li><a href="landing.html" class="active">HOME</a></li>
+                <li><a href="menu.html">MENU</a></li>
+                <li><a href="reservation.html">RESERVATION</a></li>
+                <li><a href="orders.html">ORDERS</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <a href="cart.html" class="nav-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <path d="M16 10a4 4 0 0 1-8 0" />
+                    </svg>
+                </a>
+                <a href="profile.html" class="nav-icon user-circle">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </nav>
+    <header class="hero">
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content">
+            <div class="hero-brand-logo">
+                <img src="images/fede.png" alt="Fedelicious Logo">
+            </div>
+
+            <h1>Crafting <span>Flavor.</span></h1>
+            <p>Talisay's premium wing boutique. Excellence served on every platter, curated for the bold.</p>
+
+            <div class="hero-btns">
+                <a href="menu.html" class="btn-primary">Order Online</a>
+                <a href="menu.html" class="btn-secondary">View Menu</a>
+            </div>
+        </div>
+
+        <div class="scroll-indicator">↓</div>
+    </header>
+
+    <section class="menu-section" id="menu">
+        <div class="section-header">
+            <h2>The House <span>Icons.</span></h2>
+            <p>Carefully selected signature platters that define the Fedelicious brand.</p>
+            <a href="menu.html" class="view-all">VIEW FULL MENU →</a>
+        </div>
+
+        <div class="menu-grid">
+            <div class="menu-card">
+                <div class="card-img" style="background-image: url('images/Buffalo.jpg');"></div>
+                <div class="card-info">
+                    <h3>Classic Buffalo Wings</h3>
+                    <div class="price-row">
+                        <span class="price">₱120</span>
+                        <span class="rating">★ 4.9</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card">
+                <div class="card-img" style="background-image: url('images/tapsi.png');"></div>
+                <div class="card-info">
+                    <h3>Tapsilog</h3>
+                    <div class="price-row">
+                        <span class="price">₱100</span>
+                        <span class="rating">★ 4.8</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card">
+                <div class="card-img" style="background-image: url('images/setmealD.png');"></div>
+                <div class="card-info">
+                    <h3>Set Meal D</h3>
+                    <div class="price-row">
+                        <span class="price">₱1000</span>
+                        <span class="rating">★ 4.7</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="integrity-section">
+        <div class="integrity-container">
+            <div class="integrity-badge">
+                <div class="badge-content">
+                    <strong>100%</strong>
+                    <span>FEDE QUALITY</span>
+                </div>
+            </div>
+
+            <div class="integrity-text">
+                <h2>Integrity in every <span>bite.</span></h2>
+                <p>We source our chicken daily from local Talisay farms. Our 24-hour maturation process ensures the
+                    flavor goes deep beyond the skin.</p>
+
+                <div class="features">
+                    <div class="feature-item">
+                        <h4>Daily Sourcing</h4>
+                        <p>Fresh items are delivered every morning from local farms.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>Secret Rubs</h4>
+                        <p>Hand-blended spices that create a unique complexity in every wing.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>Fedelicious</h3>
+                <p>Talisay's Premium Wing Boutique.<br>Excellence served on every platter.</p>
+            </div>
+
+            <div class="footer-links">
+                <h4>Contact</h4>
+                <p>contact@fedelicious.com</p>
+                <p>Talisay, Batangas, Philippines</p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 Fedelicious Wings. Curated for the Bold.</p>
+        </div>
+    </footer>
+
+</body>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+        scroll-behavior: smooth;
+    }
+
+    :root {
+        --primary-green: #0d2b1f;
+        --accent-orange: #ff7043;
+        --card-bg: #143528;
+        --text-muted: #8ca398;
+        --glass-white: rgba(255, 255, 255, 0.04);
+    }
+
+    body {
+        background-color: var(--primary-green);
+        color: white;
+        overflow-x: hidden;
+        line-height: 1.6;
+    }
+
+    .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1000;
+        padding: 25px 8%;
+        background: linear-gradient(to bottom, rgba(7, 20, 15, 0.95), transparent);
+    }
+
+    .nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .brand-icon img {
+        width: 35px;
+        height: 35px;
+        background: var(--accent-orange);
+        padding: 6px;
+        border-radius: 5px;
+    }
+
+    .brand-icon img {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
+    .brand-name {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        font-size: 1.4rem;
+        color: white;
+    }
+
+    .nav-links {
+        display: flex;
+        list-style: none;
+        gap: 35px;
+    }
+
+    .nav-links a {
+        text-decoration: none;
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        transition: 0.3s;
+    }
+
+    .nav-links a.active,
+    .nav-links a:hover {
+        color: var(--accent-orange);
+        border-bottom: 2px solid var(--accent-orange);
+        padding-bottom: 5px;
+    }
+
+    .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .nav-icon {
+        color: white;
+        transition: 0.3s;
+        display: flex;
+    }
+
+    .nav-icon:hover {
+        color: var(--accent-orange);
+    }
+
+    .user-circle {
+        background: var(--card-bg);
+        padding: 8px;
+        border-radius: 50%;
+    }
+
+    .hero {
+        height: 100vh;
+        background-image: url('images/wings.jpg');
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        position: relative;
+    }
+
+    .hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to bottom, rgba(7, 20, 15, 0.9), rgba(7, 20, 15, 0.6));
+        z-index: 1;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 900px;
+        padding: 0 20px;
+    }
+
+    .hero-brand-logo img {
+        width: 85px;
+        height: 85px;
+        background-color: var(--accent-orange);
+        padding: 15px;
+        border-radius: 22px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        border-radius: 50px;
+    }
+
+    .hero-content h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 5.5rem;
+        margin-bottom: 20px;
+        letter-spacing: -3px;
+        line-height: 1.1;
+    }
+
+    .hero-content h1 span {
+        color: var(--accent-orange);
+        font-style: italic;
+    }
+
+    .hero-content p {
+        font-size: 1.25rem;
+        color: var(--text-muted);
+        margin-bottom: 45px;
+        font-weight: 300;
+        font-style: italic;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .hero-btns {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+    }
+
+    .btn-primary {
+        background-color: var(--accent-orange);
+        color: white;
+        padding: 18px 45px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-primary:hover {
+        background-color: #ff8a65;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(255, 112, 67, 0.3);
+    }
+
+    .btn-secondary {
+        background: var(--glass-white);
+        color: white;
+        padding: 18px 45px;
+        border-radius: 50px;
+        text-decoration: none;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: var(--accent-orange);
+    }
+
+    .menu-section {
+        padding: 120px 8%;
+        background-color: var(--primary-green);
+    }
+
+    .section-header {
+        text-align: left;
+        margin-bottom: 60px;
+    }
+
+    .section-header h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 3.8rem;
+        margin-bottom: 10px;
+    }
+
+    .section-header h2 span {
+        color: var(--accent-orange);
+    }
+
+    .view-all {
+        color: var(--accent-orange);
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.85rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        transition: 0.3s;
+    }
+
+    .view-all:hover {
+        letter-spacing: 3px;
+    }
+
+    .menu-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 35px;
+    }
+
+    .menu-card {
+        background: var(--card-bg);
+        border-radius: 25px;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .menu-card:hover {
+        transform: translateY(-15px);
+        border-color: rgba(255, 112, 67, 0.3);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-img {
+        height: 300px;
+        background-size: cover;
+        background-position: center;
+    }
+
+    .card-info {
+        padding: 30px;
+    }
+
+    .card-info h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+
+    .price-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+        color: var(--accent-orange);
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+
+    .rating {
+        color: #ffb74d;
+        font-size: 0.9rem;
+    }
+
+    .integrity-section {
+        padding: 140px 8%;
+        background: rgba(0, 0, 0, 0.15);
+    }
+
+    .integrity-container {
+        display: flex;
+        align-items: center;
+        gap: 100px;
+    }
+
+    .integrity-badge {
+        background-color: var(--accent-orange);
+        width: 220px;
+        height: 220px;
+        border-radius: 35px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        text-align: center;
+    }
+
+    .badge-content strong {
+        font-size: 4rem;
+        display: block;
+        line-height: 1;
+    }
+
+    .badge-content span {
+        font-size: 0.75rem;
+        letter-spacing: 3px;
+        font-weight: 600;
+    }
+
+    .integrity-text h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 4rem;
+        margin-bottom: 30px;
+        line-height: 1.1;
+    }
+
+    .features {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        margin-top: 50px;
+    }
+
+    .feature-item h4 {
+        color: var(--accent-orange);
+        margin-bottom: 12px;
+        font-size: 1.2rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .feature-item p {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+    }
+
+    footer {
+        padding: 100px 8% 40px;
+        background: #07140f;
+    }
+
+    .footer-content {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 80px;
+    }
+
+    .footer-brand h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2rem;
+        margin-bottom: 20px;
+    }
+
+    .footer-links h4 {
+        color: var(--accent-orange);
+        margin-bottom: 25px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .footer-bottom {
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        padding-top: 40px;
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        letter-spacing: 1px;
+    }
+
+    .scroll-indicator {
+        position: absolute;
+        bottom: 40px;
+        z-index: 2;
+        animation: bounce 2s infinite;
+        font-size: 2.5rem;
+        color: var(--accent-orange);
+        cursor: default;
+    }
+
+    @keyframes bounce {
+
+        0%,
+        20%,
+        50%,
+        80%,
+        100% {
+            transform: translateY(0);
+        }
+
+        40% {
+            transform: translateY(-15px);
+        }
+
+        60% {
+            transform: translateY(-7px);
+        }
+    }
+
+    @media (max-width: 900px) {
+        .nav-links {
+            display: none;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+        }
+
+        .integrity-container {
+            flex-direction: column;
+            gap: 50px;
+            text-align: center;
+        }
+
+        .features {
+            grid-template-columns: 1fr;
+        }
+
+        .footer-content {
+            flex-direction: column;
+            gap: 40px;
+        }
+    }
+</style>
+
+</html>
+<script>
+    const API_URL = 'https://localhost:7201/api/Menu';
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    function loadSession() {
+        const auth = document.getElementById('auth-section');
+        const name = localStorage.getItem("fullName");
+
+        if (name) {
+            auth.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <a href="user.html" style="display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 0.85rem; color: var(--text-muted);">Hi, ${name.split(' ')[0]}!</span>
+                            <span>👤</span>
+                        </a>
+                        <span onclick="logout()" style="cursor:pointer; font-size: 1.1rem; color: var(--accent-orange);">🚪</span>
+                    </div>
+                `;
+        }
+    }
+
+    function logout() {
+        if (confirm("Sign out from Fedelicious?")) {
+            localStorage.clear();
+            location.reload();
+        }
+    }
+
+    function updateCart() {
+        const badge = document.getElementById('cart-count');
+        const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+        badge.innerText = count;
+        badge.style.display = count > 0 ? 'flex' : 'none';
+    }
+
+    async function fetchFeatured() {
+        const container = document.getElementById('featured-menu');
+        try {
+            const res = await fetch(API_URL);
+            const data = await res.json();
+            container.innerHTML = '';
+
+            // Filter wings or just show the first 4 items [cite: 47]
+            const items = data.slice(0, 4);
+
+            items.forEach(item => {
+                container.innerHTML += `
+                        <div class="menu-card">
+                            <img src="${item.image || 'https://via.placeholder.com/300x200'}" alt="${item.foodName}">
+                            <div class="menu-card-content">
+                                <h3>${item.foodName}</h3>
+                                <div class="price-row">
+                                    <span>₱${item.price}</span>
+                                    <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: 400;">
+                                        ${item.categoryName || 'Best Seller'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+            });
+        } catch (err) {
+            container.innerHTML = '<p>Check API connection.</p>';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadSession();
+        updateCart();
+        fetchFeatured();
+    });
+</script>
+</body>
+
+</html>

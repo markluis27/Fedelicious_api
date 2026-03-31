@@ -1,279 +1,770 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fedelicious | Table Reservation</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <title>Fedelicious | Reservation</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root { --bg-dark: #05110d; --accent-orange: #ea5b0c; --card-bg: #09261c; --text-light: #fff; --text-muted: #a3b8b0; --input-bg: #05110d; }
-        * { box-sizing: border-box; }
-        body { margin:0; padding:0; font-family:'Poppins', sans-serif; background:var(--bg-dark); color:var(--text-light); overflow-x: hidden; }
-        
-        /* Navbar */
-        nav { display:flex; justify-content:space-between; align-items:center; padding:18px 60px; background: rgba(5, 17, 13, 0.9); position:sticky; top:0; backdrop-filter: blur(15px); z-index:1000; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
-        .logo { font-weight:700; font-size:1.6rem; color: white; text-decoration: none; display: flex; align-items: center; }
-        .logo span { background:var(--accent-orange); padding:4px 10px; border-radius:6px; margin-right:8px; }
-        .nav-links { display:flex; align-items:center; gap:30px; }
-        .nav-links a { color:var(--text-muted); text-decoration:none; font-size:0.85rem; font-weight:600; text-transform:uppercase; transition:0.3s ease; }
-        .nav-links a.active, .nav-links a:hover { color:var(--accent-orange); }
-        #user-display-section span { color:var(--text-light); font-size:0.9rem; font-weight: 500; cursor: pointer; border-left: 1px solid rgba(255,255,255,0.1); padding-left: 15px; }
-
-        /* Container */
-        .container { display: flex; max-width: 1200px; margin: 50px auto; gap: 60px; padding: 0 40px; align-items: center; min-height: 70vh; }
-        .hero-section { flex: 1; }
-        .hero-section h1 { font-family: 'Playfair Display', serif; font-size: 4rem; line-height: 1.1; margin-bottom: 20px; }
-        .hero-section h1 span { color: var(--accent-orange); display: block; }
-        .hero-section p { color: var(--text-muted); font-size: 1rem; line-height: 1.6; }
-
-        /* Card & Inputs */
-        .booking-card { flex: 0.8; background: var(--card-bg); padding: 40px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.05); }
-        label { font-size: 0.7rem; color: var(--text-muted); font-weight: 700; margin-bottom: 8px; display: block; text-transform: uppercase; letter-spacing: 1px; }
-        .input-box { background: var(--input-bg); border-radius: 12px; display: flex; align-items: center; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); height: 55px; padding: 0 15px; position: relative; }
-        .input-box i { color: var(--accent-orange); margin-right: 12px; }
-        .input-box input, .input-box select { background: transparent; border: none; color: white; width: 100%; height: 100%; outline: none; cursor: pointer; font-family: inherit; }
-        
-        .btn-confirm { width: 100%; padding: 18px; background: var(--accent-orange); color: white; border: none; border-radius: 15px; font-weight: 700; cursor: pointer; text-transform: uppercase; margin-top: 10px; letter-spacing: 1.5px; transition: 0.3s; }
-        .btn-confirm:hover { background: #ff6a13; transform: translateY(-2px); }
-
-        /* Modal */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 9999; }
-        .payment-modal { background: var(--card-bg); padding: 40px; border-radius: 30px; width: 400px; text-align: center; border: 1px solid rgba(234, 91, 12, 0.3); }
-        .qr-container { background: white; width: 180px; height: 180px; margin: 0 auto 20px; border-radius: 15px; padding: 10px; display: flex; align-items: center; justify-content: center;}
-        .qr-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
-        .queue-badge { background: #040d0a; color: var(--accent-orange); padding: 8px 20px; border-radius: 50px; font-size: 0.75rem; font-weight: 700; margin-bottom: 20px; display: inline-block; border: 1px solid rgba(234, 91, 12, 0.2); }
-        .cancel-btn { font-size:0.75rem; color:var(--text-muted); cursor:pointer; margin-top:20px; display:inline-block; font-weight: 700; text-transform: uppercase;}
-    </style>
 </head>
+
 <body>
 
-<nav>
-    <a href="index.html" class="logo"><span>F</span> Fedelicious</a>
-    <div class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="menu.html">Menu</a>
-        <a href="reservation.html" class="active">Reservation</a>
-        <a href="orders.html">History</a>
-    </div>
-    <div id="user-display-section"><a href="login.html" style="color:white; text-decoration:none;">👤 Guest</a></div>
-</nav>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="brand">
+                <div class="brand-icon">
+                    <img src="images/fede.png" alt="Logo">
+                </div>
+                <span class="brand-name">Fedelicious</span>
+            </div>
 
-<div class="container">
-    <div class="hero-section">
-        <h1>RESERVE <span>YOUR TABLE</span></h1>
-        <p>Secure your spot for only <b>₱50.00</b> downpayment.</p>
-    </div>
+            <ul class="nav-links">
+                <li><a href="landing.html">HOME</a></li>
+                <li><a href="menu.html">MENU</a></li>
+                <li><a href="reservation.html" class="active">RESERVATION</a></li>
+                <li><a href="orders.html">HISTORY</a></li>
+            </ul>
 
-    <div class="booking-card">
-        <label>Capacity</label>
-        <div class="input-box"><i class="fa-solid fa-users"></i>
-            <select id="guest_count">
-                <option value="2">1-2 Persons</option>
-                <option value="4">3-4 Persons</option>
-                <option value="6">5-6 Persons</option>
-            </select>
+            <div class="nav-actions">
+                <a href="cart.html" class="nav-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <path d="M16 10a4 4 0 0 1-8 0" />
+                    </svg>
+                </a>
+
+                <!-- PROFILE ICON ONLY -->
+                <div class="user-circle">
+                    <a href="profile.html" class="nav-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
         </div>
+    </nav>
 
-        <div style="display:flex; gap:20px;">
-            <div style="flex:1;"><label>Date</label><div class="input-box"><i class="fa-regular fa-calendar"></i><input type="date" id="res_date"></div></div>
-            <div style="flex:1;"><label>Time</label><div class="input-box"><i class="fa-regular fa-clock"></i><input type="time" id="res_time"></div></div>
+    <!-- MAIN -->
+    <main class="res-container">
+        <div class="res-grid">
+
+            <div class="res-info">
+                <h1 class="res-title">TABLE <br><span>BOOKING</span></h1>
+                <div class="orange-bar"></div>
+
+                <p class="res-text">
+                    Experience the finest wings in Talisay. Secure your slot now.
+                    A <strong>₱50 downpayment</strong> is required to finalize your table.
+                </p>
+
+                <ul class="res-features">
+                    <li><span class="dot">✓</span> GUARANTEED SEATING</li>
+                    <li><span class="dot">✓</span> FASTER SERVICE</li>
+                    <li><span class="dot">✓</span> EXCLUSIVE PROMOS</li>
+                </ul>
+            </div>
+
+            <div class="res-card">
+                <div class="input-box">
+                    <label>SELECT CAPACITY</label>
+                    <select class="custom-field" id="guest_count">
+                        <option value="2">1-2 Persons</option>
+                        <option value="4">3-4 Persons</option>
+                        <option value="6">5-6 Persons</option>
+                    </select>
+                </div>
+
+                <div class="input-row">
+                    <div class="input-box">
+                        <label>PICK DATE</label>
+                        <input type="date" class="custom-field" id="res_date">
+                    </div>
+
+                    <div class="input-box">
+                        <label>PREFERRED TIME</label>
+                        <input type="time" class="custom-field" id="res_time">
+                    </div>
+                </div>
+
+                <div class="input-box">
+                    <label>NOTES (OPTIONAL)</label>
+                    <input type="text" class="custom-field" id="res_notes" placeholder="Birthday, window seat, etc.">
+                </div>
+
+                <div class="fee-wrapper">
+                    <div class="fee-details">
+                        <span class="fee-sub">CONFIRMATION FEE</span>
+                        <span class="fee-main">₱50</span>
+                    </div>
+                    <span class="req-tag">REQUIRED</span>
+                </div>
+
+                <button class="confirm-btn" id="saveBtn" onclick="processReservation()">
+                    PROCEED TO PAYMENT <span class="arrow">→</span>
+                </button>
+            </div>
+
         </div>
+    </main>
 
-        <label>Notes (Optional)</label>
-        <div class="input-box"><i class="fa-regular fa-note-sticky"></i><input type="text" id="res_notes" placeholder="Birthday, window seat, etc."></div>
+    <!-- MODAL -->
+    <div class="modal-overlay" id="payment-overlay">
+        <div class="payment-modal">
+            <h2 id="modal-payment-title"
+                style="margin-top:0; margin-bottom: 15px; color:white; font-size: 1.5rem; letter-spacing: 1px;">
+                GCASH PAYMENT
+            </h2>
 
-        <button class="btn-confirm" id="saveBtn" onclick="processReservation()">PROCEED TO PAYMENT →</button>
+            <div>
+                <span class="queue-badge" id="queue-no">BOOKING: SAVING...</span>
+            </div>
+
+            <div class="qr-container">
+                <img src="" id="modal-qr-img" alt="Loading QR Code...">
+            </div>
+
+            <p style="font-size:0.8rem; color:var(--text-muted);">
+                Amount: <span style="color:white; font-weight:700;">₱50.00</span>
+            </p>
+
+            <div style="text-align: left; margin-top:20px;">
+                <label id="account-num-label">Account Number</label>
+                <input type="text" class="custom-field" id="gcash_num" placeholder="09xxxxxxxxx" maxlength="11">
+
+                <br><br>
+
+                <label>Reference Number</label>
+                <input type="text" class="custom-field" id="ref_num" placeholder="13-Digit Code">
+            </div>
+
+            <br>
+
+            <button class="confirm-btn" id="payment-btn" onclick="submitFinalPayment()">
+                COMPLETE PAYMENT →
+            </button>
+
+            <br><br>
+
+            <span class="cancel-btn" onclick="closePaymentModal()">Close & Pay Later</span>
+        </div>
     </div>
-</div>
 
-<div class="modal-overlay" id="payment-overlay">
-    <div class="payment-modal">
-        <h2 id="modal-payment-title" style="margin-top:0; margin-bottom: 15px; color:white; font-size: 1.5rem; letter-spacing: 1px;">GCASH PAYMENT</h2>
-
-        <div><span class="queue-badge" id="queue-no">BOOKING: SAVING...</span></div>
-        
-        <div class="qr-container">
-            <img src="" id="modal-qr-img" alt="Loading QR Code...">
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>Fedelicious</h3>
+                <p>Talisay's Premium Wing Boutique.<br>Excellence served on every platter.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Contact</h4>
+                <p>contact@fedelicious.com</p>
+                <p>Talisay, Batangas, Philippines</p>
+            </div>
         </div>
-        
-        <p style="font-size:0.8rem; color:var(--text-muted);">Amount: <span style="color:white; font-weight:700;">₱50.00</span></p>
-        
-        <div style="text-align: left; margin-top:20px;">
-            <label id="account-num-label">Account Number</label>
-            <div class="input-box"><i class="fas fa-phone"></i><input type="text" id="gcash_num" placeholder="09xxxxxxxxx" maxlength="11"></div>
-            <label>Reference Number</label>
-            <div class="input-box"><i class="fas fa-receipt"></i><input type="text" id="ref_num" placeholder="13-Digit Code"></div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Fedelicious Wings. Curated for the Bold.</p>
         </div>
-        
-        <button class="btn-confirm" id="payment-btn" onclick="submitFinalPayment()">COMPLETE PAYMENT →</button>
-        <br>
-        <span class="cancel-btn" onclick="closePaymentModal()">Close & Pay Later</span>
-    </div>
-</div>
+    </footer>
 
-<script>
-    const API_RES = 'https://localhost:7201/api/Reservation';
-    const API_PAYMENT = 'https://localhost:7201/api/Payment'; 
-    const API_GET_ID_BY_NAME = 'https://localhost:7201/api/Auth/getCustomerId/'; 
-    const API_ACTIVE_QR = 'https://localhost:7201/api/PaymentQr/active'; 
-    
-    let currentResId = null; 
-    let activePaymentMethodName = "GCash"; 
-    
-    // GINAMIT NATIN ITO PARA I-STORE YUNG ID NG QR CODE
-    let activeQrId = null; 
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const fullName = localStorage.getItem("fullName");
-        if (fullName && fullName !== "null") {
-            document.getElementById("user-display-section").innerHTML = `<span onclick="logout()">Hi, ${fullName.split(' ')[0]} 🚪</span>`;
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
         }
-        document.getElementById('res_date').min = new Date().toISOString().split('T')[0];
-        
-        loadActiveQR();
-    });
 
-    async function loadActiveQR() {
-        try {
-            const res = await fetch(API_ACTIVE_QR);
-            if (res.ok) {
-                const qrs = await res.json();
-                if (qrs && qrs.length > 0) {
-                    const activeQr = qrs[0]; 
-                    activePaymentMethodName = activeQr.qr_name;
-                    
-                    // NAKA-TUGMA NA ITO SA BINABATO NG C# (paymentqr_id)
-                    activeQrId = activeQr.paymentqr_id; 
-                    
-                    document.getElementById('modal-payment-title').innerText = `${activeQr.qr_name.toUpperCase()} PAYMENT`;
-                    document.getElementById('account-num-label').innerText = `${activeQr.qr_name} Number`;
-                    document.getElementById('modal-qr-img').src = `data:image/jpeg;base64,${activeQr.qr_image}`;
-                }
+        :root {
+            --primary-green: #0d2b1f;
+            --accent-orange: #ff7043;
+            --card-bg: #143528;
+            --text-muted: #8ca398;
+            --input-bg: #0a2118;
+        }
+
+        body {
+            background-color: var(--primary-green);
+            color: white;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* --- NAVBAR --- */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 25px 8%;
+            background: linear-gradient(to bottom, rgba(7, 20, 15, 0.95), transparent);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon img {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-orange);
+            padding: 6px;
+            border-radius: 50%;
+        }
+
+        .brand-name {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 35px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        .nav-links a.active,
+        .nav-links a:hover {
+            color: var(--accent-orange);
+            border-bottom: 2px solid var(--accent-orange);
+            padding-bottom: 5px;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-icon {
+            color: white;
+            display: flex;
+            transition: 0.3s;
+            text-decoration: none;
+        }
+
+        .nav-icon:hover {
+            color: var(--accent-orange);
+        }
+
+        /* UPDATED USER CIRCLE (PROFILE ICON ONLY) */
+        .user-circle {
+            background: var(--card-bg);
+            padding: 8px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* --- RESERVATION LAYOUT --- */
+        .res-container {
+            min-height: 100vh;
+            padding: 160px 8% 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .res-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            max-width: 1300px;
+            width: 100%;
+            align-items: start;
+        }
+
+        .res-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3rem, 6vw, 5rem);
+            line-height: 1;
+            margin-bottom: 20px;
+        }
+
+        .res-title span {
+            color: var(--accent-orange);
+        }
+
+        .orange-bar {
+            width: 60px;
+            height: 4px;
+            background: var(--accent-orange);
+            margin-bottom: 30px;
+        }
+
+        .res-text {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 450px;
+            margin-bottom: 40px;
+        }
+
+        .res-features {
+            list-style: none;
+        }
+
+        .res-features li {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 18px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .dot {
+            width: 24px;
+            height: 24px;
+            border: 1px solid var(--accent-orange);
+            color: var(--accent-orange);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+
+        .res-card {
+            background: var(--card-bg);
+            padding: 50px;
+            border-radius: 40px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .input-box {
+            margin-bottom: 25px;
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .custom-field {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 15px 20px;
+            color: white;
+            border-radius: 15px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: 0.3s ease;
+        }
+
+        .custom-field:focus {
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 15px rgba(255, 112, 67, 0.1);
+        }
+
+        .fee-wrapper {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 25px;
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 30px 0;
+        }
+
+        .fee-sub {
+            display: block;
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            font-weight: 800;
+        }
+
+        .fee-main {
+            font-size: 2.2rem;
+            font-weight: 700;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .req-tag {
+            background: rgba(255, 112, 67, 0.1);
+            color: var(--accent-orange);
+            border: 1px solid var(--accent-orange);
+            padding: 6px 15px;
+            border-radius: 30px;
+            font-size: 0.65rem;
+            font-weight: 800;
+        }
+
+        .confirm-btn {
+            width: 100%;
+            background: var(--accent-orange);
+            color: white;
+            border: none;
+            padding: 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .confirm-btn:hover {
+            background: #ff8a65;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 112, 67, 0.4);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+
+        .payment-modal {
+            background: var(--card-bg);
+            padding: 50px;
+            border-radius: 40px;
+            width: 450px;
+            max-width: 95%;
+            text-align: center;
+            border: 1px solid rgba(255, 112, 67, 0.3);
+        }
+
+        .qr-container {
+            background: white;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 20px;
+            border-radius: 15px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .queue-badge {
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--accent-orange);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: inline-block;
+            border: 1px solid rgba(255, 112, 67, 0.2);
+        }
+
+        .cancel-btn {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            margin-top: 20px;
+            display: inline-block;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        footer {
+            padding: 80px 8% 40px;
+            background: #07140f;
+            margin-top: 50px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 50px;
+        }
+
+        .footer-brand h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .footer-links h4 {
+            color: var(--accent-orange);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 30px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 1000px) {
+            .res-grid {
+                grid-template-columns: 1fr;
+                gap: 60px;
             }
-        } catch (e) {
-            console.error("Failed to fetch active QR. Using fallback UI.", e);
-            document.getElementById('modal-qr-img').alt = "No active QR found. Pay over counter.";
+
+            .res-container {
+                padding: 120px 8% 60px;
+            }
+
+            .res-title {
+                text-align: center;
+                font-size: 3.5rem;
+            }
+
+            .orange-bar {
+                margin: 0 auto 30px;
+            }
+
+            .res-text {
+                margin: 0 auto 40px;
+                text-align: center;
+            }
+
+            .res-features {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .res-card {
+                padding: 40px 30px;
+            }
         }
-    }
 
-    async function processReservation() {
-        const date = document.getElementById("res_date").value;
-        const time = document.getElementById("res_time").value;
-        const fullName = localStorage.getItem("fullName");
+        @media (max-width: 600px) {
+            .nav-links {
+                display: none;
+            }
 
-        if (!date || !time) return alert("Please select date and time.");
-        if (!fullName) return alert("Please login first.");
+            .input-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
 
-        const btn = document.getElementById("saveBtn");
-        btn.disabled = true; btn.innerText = "SAVING...";
+            .fee-wrapper {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
 
-        try {
-            const idRes = await fetch(`${API_GET_ID_BY_NAME}${encodeURIComponent(fullName)}`);
-            const userData = await idRes.json();
-            const cID = userData.customer_id;
+            .res-title {
+                font-size: 2.8rem;
+            }
+        }
+    </style>
 
-            const payload = {
-                reservation_id: 0,
-                customer_id: cID,
-                reservation_date: date,
-                reservation_time: time + ":00", 
-                number_of_guests: parseInt(document.getElementById("guest_count").value),
-                reservation_status: "waiting for verification", 
-                notes: document.getElementById("res_notes").value || "N/A",
-                downpayment_amount: 50.00
+    <script>
+        const API_RES = 'https://localhost:7201/api/Reservation';
+        const API_PAYMENT = 'https://localhost:7201/api/Payment';
+        const API_GET_ID_BY_NAME = 'https://localhost:7201/api/Auth/getCustomerId/';
+        const API_ACTIVE_QR = 'https://localhost:7201/api/PaymentQr/active';
+
+        let currentResId = null;
+        let activePaymentMethodName = "GCash";
+        let activeQrId = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('res_date').min = new Date().toISOString().split('T')[0];
+            loadActiveQR();
+        });
+
+        async function loadActiveQR() {
+            try {
+                const res = await fetch(API_ACTIVE_QR);
+                if (res.ok) {
+                    const qrs = await res.json();
+                    if (qrs && qrs.length > 0) {
+                        const activeQr = qrs[0];
+                        activePaymentMethodName = activeQr.qr_name;
+                        activeQrId = activeQr.paymentqr_id;
+
+                        document.getElementById('modal-payment-title').innerText = `${activeQr.qr_name.toUpperCase()} PAYMENT`;
+                        document.getElementById('account-num-label').innerText = `${activeQr.qr_name} Number`;
+                        document.getElementById('modal-qr-img').src = `data:image/jpeg;base64,${activeQr.qr_image}`;
+                    }
+                }
+            } catch (e) {
+                console.error("Failed to fetch active QR. Using fallback UI.", e);
+                document.getElementById('modal-qr-img').alt = "No active QR found. Pay over counter.";
+            }
+        }
+
+        async function processReservation() {
+            const date = document.getElementById("res_date").value;
+            const time = document.getElementById("res_time").value;
+            const fullName = localStorage.getItem("fullName");
+
+            if (!date || !time) return alert("Please select date and time.");
+            if (!fullName) return alert("Please login first.");
+
+            const btn = document.getElementById("saveBtn");
+            btn.disabled = true;
+            btn.innerText = "SAVING...";
+
+            try {
+                const idRes = await fetch(`${API_GET_ID_BY_NAME}${encodeURIComponent(fullName)}`);
+                const userData = await idRes.json();
+                const cID = userData.customer_id;
+
+                const payload = {
+                    reservation_id: 0,
+                    customer_id: cID,
+                    reservation_date: date,
+                    reservation_time: time + ":00",
+                    number_of_guests: parseInt(document.getElementById("guest_count").value),
+                    reservation_status: "waiting for verification",
+                    notes: document.getElementById("res_notes").value || "N/A",
+                    downpayment_amount: 50.00
+                };
+
+                const res = await fetch(API_RES, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await res.json();
+
+                if (res.ok) {
+                    currentResId = result.data ? result.data.reservation_id : result.reservation_id;
+
+                    if (currentResId) {
+                        localStorage.setItem("latest_res_id", currentResId);
+                        document.getElementById("queue-no").innerText = "BOOKING ID: #" + currentResId;
+                        document.getElementById("payment-overlay").style.display = 'flex';
+                    } else {
+                        alert("System failed to retrieve Reservation ID.");
+                    }
+                } else {
+                    alert("Error: " + (result.message || "Failed to save."));
+                }
+            } catch (e) {
+                console.error(e);
+                alert("Server connection failed.");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "PROCEED TO PAYMENT →";
+            }
+        }
+
+        async function submitFinalPayment() {
+            const gNum = document.getElementById("gcash_num").value.trim();
+            const rNum = document.getElementById("ref_num").value.trim();
+
+            const resId = currentResId || localStorage.getItem("latest_res_id");
+
+            if (!resId) return alert("Reservation ID not found. Please try again.");
+            if (gNum.length < 11 || rNum.length < 5) return alert("Please complete payment details.");
+
+            const btn = document.getElementById("payment-btn");
+            btn.disabled = true;
+            btn.innerText = "PROCESSING...";
+
+            const payPayload = {
+                payment_id: 0,
+                reservation_id: parseInt(resId),
+                order_id: null,
+                payment_method: activePaymentMethodName,
+                paymentqr_id: activeQrId,
+                amount: 50.00,
+                reference_number: rNum,
+                customer_phone: gNum,
+                payment_status: "Pending Verification",
+                payment_date: new Date().toISOString()
             };
 
-            const res = await fetch(API_RES, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
+            console.log("SENDING TO API:", payPayload);
 
-            const result = await res.json();
-            
-            if (res.ok) {
-                currentResId = result.data ? result.data.reservation_id : result.reservation_id;
-                
-                if(currentResId) {
-                    localStorage.setItem("latest_res_id", currentResId); 
-                    document.getElementById("queue-no").innerText = "BOOKING ID: #" + currentResId;
-                    document.getElementById("payment-overlay").style.display = 'flex';
+            try {
+                const res = await fetch(API_PAYMENT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payPayload)
+                });
+
+                if (res.ok) {
+                    alert(`Success! ${activePaymentMethodName} Payment submitted for Reservation #${resId}`);
+                    localStorage.removeItem("latest_res_id");
+                    window.location.href = "orders.html";
                 } else {
-                    alert("System failed to retrieve Reservation ID.");
+                    const err = await res.json();
+
+                    if (err.errors) {
+                        console.error("Validation Errors:", err.errors);
+                        alert("API Error: May kulang sa pinasang data. Paki-check ang console (F12).");
+                    } else {
+                        alert(err.message || "Payment submission failed.");
+                    }
                 }
-            } else {
-                alert("Error: " + (result.message || "Failed to save."));
+            } catch (e) {
+                alert("Payment server error.");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "COMPLETE PAYMENT →";
             }
-        } catch (e) {
-            console.error(e);
-            alert("Server connection failed.");
-        } finally {
-            btn.disabled = false; btn.innerText = "PROCEED TO PAYMENT →";
         }
-    }
 
-    async function submitFinalPayment() {
-        const gNum = document.getElementById("gcash_num").value.trim();
-        const rNum = document.getElementById("ref_num").value.trim();
-        
-        const resId = currentResId || localStorage.getItem("latest_res_id");
-
-        if (!resId) return alert("Reservation ID not found. Please try again.");
-        if (gNum.length < 11 || rNum.length < 5) return alert("Please complete payment details.");
-
-        const btn = document.getElementById("payment-btn");
-        btn.disabled = true; btn.innerText = "PROCESSING...";
-
-        // IPAPASA NA NATIN YUNG paymentqr_id DITO SA PAYLOAD
-        const payPayload = {
-            payment_id: 0,
-            reservation_id: parseInt(resId), 
-            order_id: null, 
-            payment_method: activePaymentMethodName,
-            
-            // KUNG ANO ANG PANGALAN SA PAYMENT MODEL MO, DAPAT TUGMA ITO:
-            paymentqr_id: activeQrId, 
-            
-            amount: 50.00,
-            reference_number: rNum,
-            customer_phone: gNum,
-            payment_status: "Pending Verification",
-            payment_date: new Date().toISOString()
-        };
-
-        console.log("SENDING TO API:", payPayload);
-
-        try {
-            const res = await fetch(API_PAYMENT, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payPayload)
-            });
-            
-            if (res.ok) {
-                alert(`Success! ${activePaymentMethodName} Payment submitted for Reservation #${resId}`);
-                localStorage.removeItem("latest_res_id");
-                window.location.href = "orders.html";
-            } else {
-                const err = await res.json();
-                
-                if(err.errors) {
-                     console.error("Validation Errors:", err.errors);
-                     alert("API Error: May kulang sa pinasang data. Paki-check ang console (F12).");
-                } else {
-                     alert(err.message || "Payment submission failed.");
-                }
-            }
-        } catch (e) {
-            alert("Payment server error.");
-        } finally {
-            btn.disabled = false; btn.innerText = "COMPLETE PAYMENT →";
+        function closePaymentModal() {
+            document.getElementById("payment-overlay").style.display = 'none';
         }
-    }
+    </script>
 
-    function closePaymentModal() { document.getElementById("payment-overlay").style.display = 'none'; }
-    function logout() { localStorage.clear(); window.location.href = "login.html"; }
-</script>
 </body>
+
 </html>

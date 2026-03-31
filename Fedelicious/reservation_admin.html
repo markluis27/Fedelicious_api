@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fedelicious Admin | Reservations Intelligence</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -96,7 +98,7 @@
             background: var(--white);
             padding: 5px;
             border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
             gap: 5px;
         }
 
@@ -141,7 +143,7 @@
             min-width: 220px;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
             border-bottom: 4px solid #eee;
         }
 
@@ -159,9 +161,17 @@
             margin-top: 5px;
         }
 
-        .stat-total { border-color: var(--sidebar-dark); }
-        .stat-confirmed { border-color: var(--status-green); }
-        .stat-pending { border-color: var(--accent-orange); }
+        .stat-total {
+            border-color: var(--sidebar-dark);
+        }
+
+        .stat-confirmed {
+            border-color: var(--status-green);
+        }
+
+        .stat-pending {
+            border-color: var(--accent-orange);
+        }
 
         .res-container {
             display: flex;
@@ -178,14 +188,14 @@
             grid-template-columns: 60px 1fr auto auto;
             align-items: center;
             gap: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
             border: 1px solid var(--border);
             transition: 0.3s;
         }
 
         .res-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
         }
 
         .avatar-box {
@@ -353,7 +363,7 @@
             border-radius: 20px;
             text-align: center;
             color: var(--text-muted);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
         }
 
         .main::-webkit-scrollbar {
@@ -399,218 +409,221 @@
         }
     </style>
 </head>
+
 <body>
 
-<aside class="sidebar">
-    <h2>FEDELICIOUS</h2>
-    <a href="admin.html"><i class="fas fa-th-large"></i> DASHBOARD</a>
-    <a href="order_admin.html"><i class="fas fa-shopping-cart"></i> ORDERS</a>
-    <a href="reservation_admin.html" class="active"><i class="fas fa-calendar-alt"></i> RESERVATIONS</a>
-    <a href="menusetting.html"><i class="fas fa-utensils"></i> MENU SETTINGS</a>
-    <a href="salesreport.html"><i class="fas fa-chart-line"></i> SALES REPORT</a>
-    <a href="customeractivity.html"><i class="fa fa-user"></i> CUSTOMER ACTIVITY</a>
-    <a href="admin_management.html" id="superAdminLink"><i class="fas fa-user-shield"></i> SYSTEM ADMINS</a>
-    <a href="#" style="margin-top: auto; color: #e74c3c;" onclick="logout()"><i class="fas fa-sign-out-alt"></i> SIGN OUT</a>
-</aside>
+    <aside class="sidebar">
+        <h2>FEDELICIOUS</h2>
+        <a href="admin.html"><i class="fas fa-th-large"></i> DASHBOARD</a>
+        <a href="order_admin.html"><i class="fas fa-shopping-cart"></i> ORDERS</a>
+        <a href="reservation_admin.html" class="active"><i class="fas fa-calendar-alt"></i> RESERVATIONS</a>
+        <a href="menusetting.html"><i class="fas fa-utensils"></i> MENU SETTINGS</a>
+        <a href="salesreport.html"><i class="fas fa-chart-line"></i> SALES REPORT</a>
+        <a href="customeractivity.html"><i class="fa fa-user"></i> CUSTOMER ACTIVITY</a>
+        <a href="admin_management.html" id="superAdminLink"><i class="fas fa-user-shield"></i> SYSTEM ADMINS</a>
+        <a href="#" style="margin-top: auto; color: #e74c3c;" onclick="logout()"><i class="fas fa-sign-out-alt"></i>
+            SIGN OUT</a>
+    </aside>
 
-<main class="main">
-    <div class="header-section">
-        <div>
-            <h2 style="font-weight: 800; color: var(--sidebar-dark);">RESERVATIONS</h2>
-            <p style="font-size: 0.85rem; color: var(--text-muted);">Reservation and payment tracking</p>
+    <main class="main">
+        <div class="header-section">
+            <div>
+                <h2 style="font-weight: 800; color: var(--sidebar-dark);">RESERVATIONS</h2>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Reservation and payment tracking</p>
+            </div>
+
+            <div class="filter-tabs">
+                <button class="tab-btn active" id="tab-all" onclick="filterReservations('all')">All Bookings</button>
+                <button class="tab-btn" id="tab-confirmed" onclick="filterReservations('confirmed')">Confirmed</button>
+                <button class="tab-btn" id="tab-pending" onclick="filterReservations('pending')">Pending <span
+                        id="pending-badge">0</span></button>
+            </div>
         </div>
 
-        <div class="filter-tabs">
-            <button class="tab-btn active" id="tab-all" onclick="filterReservations('all')">All Bookings</button>
-            <button class="tab-btn" id="tab-confirmed" onclick="filterReservations('confirmed')">Confirmed</button>
-            <button class="tab-btn" id="tab-pending" onclick="filterReservations('pending')">Pending <span id="pending-badge">0</span></button>
+        <div class="stats-row">
+            <div class="stat-card stat-total">
+                <h3 id="total-count">0</h3>
+                <p>Total Reservations</p>
+            </div>
+            <div class="stat-card stat-confirmed">
+                <h3 id="confirmed-count">0</h3>
+                <p>Confirmed Reservations</p>
+            </div>
+            <div class="stat-card stat-pending">
+                <h3 id="pending-stat">0</h3>
+                <p>Waiting Verification</p>
+            </div>
         </div>
-    </div>
 
-    <div class="stats-row">
-        <div class="stat-card stat-total">
-            <h3 id="total-count">0</h3>
-            <p>Total Reservations</p>
+        <div id="res-list" class="res-container">
+            <div class="loading-state">Loading reservations...</div>
         </div>
-        <div class="stat-card stat-confirmed">
-            <h3 id="confirmed-count">0</h3>
-            <p>Confirmed Reservations</p>
-        </div>
-        <div class="stat-card stat-pending">
-            <h3 id="pending-stat">0</h3>
-            <p>Waiting Verification</p>
-        </div>
-    </div>
+    </main>
 
-    <div id="res-list" class="res-container">
-        <div class="loading-state">Loading reservations...</div>
-    </div>
-</main>
+    <script>
+        const SP_API = "https://localhost:7201/api/Sp/reservations";
+        const ACTION_API = "https://localhost:7201/api/Reservation";
 
-<script>
-    const SP_API = "https://localhost:7201/api/Sp/reservations";
-    const ACTION_API = "https://localhost:7201/api/Reservation";
+        let allReservations = [];
+        let currentFilter = "all";
 
-    let allReservations = [];
-    let currentFilter = "all";
+        async function loadReservations() {
+            const container = document.getElementById("res-list");
+            container.innerHTML = `<div class="loading-state">Loading reservations...</div>`;
 
-    async function loadReservations() {
-        const container = document.getElementById("res-list");
-        container.innerHTML = `<div class="loading-state">Loading reservations...</div>`;
+            try {
+                const res = await fetch(SP_API, {
+                    headers: {
+                        "accept": "*/*"
+                    }
+                });
 
-        try {
-            const res = await fetch(SP_API, {
-                headers: {
-                    "accept": "*/*"
+                if (!res.ok) {
+                    throw new Error(`Failed to load reservations. Status: ${res.status}`);
                 }
-            });
 
-            if (!res.ok) {
-                throw new Error(`Failed to load reservations. Status: ${res.status}`);
-            }
+                const data = await res.json();
+                allReservations = Array.isArray(data) ? data : [];
 
-            const data = await res.json();
-            allReservations = Array.isArray(data) ? data : [];
-
-            updateDashboardUI();
-        } catch (e) {
-            console.error("Load Reservation Error:", e);
-            container.innerHTML = `
+                updateDashboardUI();
+            } catch (e) {
+                console.error("Load Reservation Error:", e);
+                container.innerHTML = `
                 <div class="error-state">
                     Failed to load reservation data.<br>
                     Check your API / SP endpoint.
                 </div>
             `;
-        }
-    }
-
-    function updateDashboardUI() {
-        const pendingCount = allReservations.filter(r => {
-            const status = (r.reservation_status || "").toLowerCase();
-            return status.includes("waiting") || status === "pending";
-        }).length;
-
-        const confirmedCount = allReservations.filter(r => {
-            const status = (r.reservation_status || "").toLowerCase();
-            return status === "confirmed";
-        }).length;
-
-        document.getElementById("total-count").innerText = allReservations.length;
-        document.getElementById("confirmed-count").innerText = confirmedCount;
-        document.getElementById("pending-stat").innerText = pendingCount;
-        document.getElementById("pending-badge").innerText = pendingCount;
-
-        filterReservations(currentFilter);
-    }
-
-    function filterReservations(type) {
-        currentFilter = type;
-
-        document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
-        const activeTab = document.getElementById("tab-" + type);
-        if (activeTab) {
-            activeTab.classList.add("active");
-        }
-
-        let filtered = [...allReservations];
-
-        if (type === "pending") {
-            filtered = allReservations.filter(r => {
-                const status = (r.reservation_status || "").toLowerCase();
-                return status.includes("waiting") || status === "pending";
-            });
-        } else if (type === "confirmed") {
-            filtered = allReservations.filter(r => {
-                const status = (r.reservation_status || "").toLowerCase();
-                return status === "confirmed";
-            });
-        }
-
-        renderCards(filtered);
-    }
-
-    function getStatusColor(status) {
-        const s = (status || "").toLowerCase();
-
-        if (s.includes("waiting") || s === "pending") return "var(--status-blue)";
-        if (s === "confirmed") return "var(--status-green)";
-        if (s === "cancelled") return "var(--status-red)";
-
-        return "#95a5a6";
-    }
-
-    function formatDate(dateValue) {
-        if (!dateValue) return "N/A";
-        const date = new Date(dateValue);
-        if (isNaN(date.getTime())) return "N/A";
-
-        return date.toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric"
-        });
-    }
-
-    function formatAmount(value) {
-        const amount = Number(value || 0);
-        return amount.toLocaleString("en-PH", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        });
-    }
-
-    function formatTime(value) {
-        if (!value) return "N/A";
-
-        if (typeof value === "string" && value.includes(":")) {
-            const parts = value.split(":");
-            const hour = parseInt(parts[0], 10);
-            const minute = parts[1] || "00";
-
-            if (!isNaN(hour)) {
-                const suffix = hour >= 12 ? "PM" : "AM";
-                const hour12 = hour % 12 || 12;
-                return `${hour12}:${minute} ${suffix}`;
             }
         }
 
-        return value;
-    }
+        function updateDashboardUI() {
+            const pendingCount = allReservations.filter(r => {
+                const status = (r.reservation_status || "").toLowerCase();
+                return status.includes("waiting") || status === "pending";
+            }).length;
 
-    function escapeHtml(value) {
-        if (value === null || value === undefined) return "";
-        return String(value)
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-    }
+            const confirmedCount = allReservations.filter(r => {
+                const status = (r.reservation_status || "").toLowerCase();
+                return status === "confirmed";
+            }).length;
 
-    function renderCards(data) {
-        const container = document.getElementById("res-list");
+            document.getElementById("total-count").innerText = allReservations.length;
+            document.getElementById("confirmed-count").innerText = confirmedCount;
+            document.getElementById("pending-stat").innerText = pendingCount;
+            document.getElementById("pending-badge").innerText = pendingCount;
 
-        if (!data.length) {
-            container.innerHTML = `<div class="empty-state">No reservations found for this filter.</div>`;
-            return;
+            filterReservations(currentFilter);
         }
 
-        container.innerHTML = data.map(item => {
-            const statusText = item.reservation_status || "Unknown";
-            const isWaiting = statusText.toLowerCase().includes("waiting") || statusText.toLowerCase() === "pending";
-            const statusBg = getStatusColor(statusText);
+        function filterReservations(type) {
+            currentFilter = type;
 
-            const customerName = item.full_name || item.customerName || "GUEST CUSTOMER";
-            const reservationDate = formatDate(item.reservation_date);
-            const reservationTime = formatTime(item.reservation_time);
-            const referenceNumber = item.reference_number || "N/A";
-            const customerPhone = item.customer_phone || "No Phone";
-            const amount = formatAmount(item.payment_amount);
-            const notes = item.notes || "No instructions";
-            const qrName = item.qr_name || "No QR Recorded";
-            const qrAccName = item.qr_accname || "No Account Name";
+            document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+            const activeTab = document.getElementById("tab-" + type);
+            if (activeTab) {
+                activeTab.classList.add("active");
+            }
 
-            return `
+            let filtered = [...allReservations];
+
+            if (type === "pending") {
+                filtered = allReservations.filter(r => {
+                    const status = (r.reservation_status || "").toLowerCase();
+                    return status.includes("waiting") || status === "pending";
+                });
+            } else if (type === "confirmed") {
+                filtered = allReservations.filter(r => {
+                    const status = (r.reservation_status || "").toLowerCase();
+                    return status === "confirmed";
+                });
+            }
+
+            renderCards(filtered);
+        }
+
+        function getStatusColor(status) {
+            const s = (status || "").toLowerCase();
+
+            if (s.includes("waiting") || s === "pending") return "var(--status-blue)";
+            if (s === "confirmed") return "var(--status-green)";
+            if (s === "cancelled") return "var(--status-red)";
+
+            return "#95a5a6";
+        }
+
+        function formatDate(dateValue) {
+            if (!dateValue) return "N/A";
+            const date = new Date(dateValue);
+            if (isNaN(date.getTime())) return "N/A";
+
+            return date.toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric"
+            });
+        }
+
+        function formatAmount(value) {
+            const amount = Number(value || 0);
+            return amount.toLocaleString("en-PH", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        function formatTime(value) {
+            if (!value) return "N/A";
+
+            if (typeof value === "string" && value.includes(":")) {
+                const parts = value.split(":");
+                const hour = parseInt(parts[0], 10);
+                const minute = parts[1] || "00";
+
+                if (!isNaN(hour)) {
+                    const suffix = hour >= 12 ? "PM" : "AM";
+                    const hour12 = hour % 12 || 12;
+                    return `${hour12}:${minute} ${suffix}`;
+                }
+            }
+
+            return value;
+        }
+
+        function escapeHtml(value) {
+            if (value === null || value === undefined) return "";
+            return String(value)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function renderCards(data) {
+            const container = document.getElementById("res-list");
+
+            if (!data.length) {
+                container.innerHTML = `<div class="empty-state">No reservations found for this filter.</div>`;
+                return;
+            }
+
+            container.innerHTML = data.map(item => {
+                const statusText = item.reservation_status || "Unknown";
+                const isWaiting = statusText.toLowerCase().includes("waiting") || statusText.toLowerCase() === "pending";
+                const statusBg = getStatusColor(statusText);
+
+                const customerName = item.full_name || item.customerName || "GUEST CUSTOMER";
+                const reservationDate = formatDate(item.reservation_date);
+                const reservationTime = formatTime(item.reservation_time);
+                const referenceNumber = item.reference_number || "N/A";
+                const customerPhone = item.customer_phone || "No Phone";
+                const amount = formatAmount(item.payment_amount);
+                const notes = item.notes || "No instructions";
+                const qrName = item.qr_name || "No QR Recorded";
+                const qrAccName = item.qr_accname || "No Account Name";
+
+                return `
                 <div class="res-card">
                     <div class="avatar-box">
                         <i class="fas fa-user-circle"></i>
@@ -665,88 +678,88 @@
                     </div>
 
                     <div class="action-btns">
-                        ${
-                            isWaiting
-                                ? `<button class="btn btn-confirm" onclick="confirmReservation(${item.reservation_id})" title="Confirm"><i class="fas fa-check"></i></button>`
-                                : `<i class="fas fa-check-circle confirmed-icon" title="Verified"></i>`
-                        }
+                        ${isWaiting
+                        ? `<button class="btn btn-confirm" onclick="confirmReservation(${item.reservation_id})" title="Confirm"><i class="fas fa-check"></i></button>`
+                        : `<i class="fas fa-check-circle confirmed-icon" title="Verified"></i>`
+                    }
                         <button class="btn btn-delete" onclick="deleteRes(${item.reservation_id})" title="Delete">
                             <i class="fas fa-trash-alt"></i>
                         </button>
                     </div>
                 </div>
             `;
-        }).join("");
-    }
+            }).join("");
+        }
 
-    async function confirmReservation(id) {
-        if (!confirm("Verify payment and confirm booking?")) return;
+        async function confirmReservation(id) {
+            if (!confirm("Verify payment and confirm booking?")) return;
 
-        try {
-            const res = await fetch(`${ACTION_API}/confirm/${id}`, {
-                method: "PUT",
-                headers: {
-                    "accept": "*/*"
+            try {
+                const res = await fetch(`${ACTION_API}/confirm/${id}`, {
+                    method: "PUT",
+                    headers: {
+                        "accept": "*/*"
+                    }
+                });
+
+                const result = await res.json().catch(() => null);
+
+                if (res.ok) {
+                    alert(result?.message || "Reservation confirmed successfully.");
+                    loadReservations();
+                } else {
+                    alert(result?.message || "Failed to confirm reservation.");
+                    console.error("Confirm Reservation Error:", result);
                 }
-            });
-
-            const result = await res.json().catch(() => null);
-
-            if (res.ok) {
-                alert(result?.message || "Reservation confirmed successfully.");
-                loadReservations();
-            } else {
-                alert(result?.message || "Failed to confirm reservation.");
-                console.error("Confirm Reservation Error:", result);
+            } catch (err) {
+                console.error("Confirm Reservation Fetch Error:", err);
+                alert("Error updating reservation.");
             }
-        } catch (err) {
-            console.error("Confirm Reservation Fetch Error:", err);
-            alert("Error updating reservation.");
         }
-    }
 
-    async function deleteRes(id) {
-        if (!confirm("Delete this record permanently?")) return;
+        async function deleteRes(id) {
+            if (!confirm("Delete this record permanently?")) return;
 
-        try {
-            const res = await fetch(`${ACTION_API}/${id}`, {
-                method: "DELETE",
-                headers: {
-                    "accept": "*/*"
+            try {
+                const res = await fetch(`${ACTION_API}/${id}`, {
+                    method: "DELETE",
+                    headers: {
+                        "accept": "*/*"
+                    }
+                });
+
+                const result = await res.json().catch(() => null);
+
+                if (res.ok) {
+                    alert(result?.message || "Reservation deleted successfully.");
+                    loadReservations();
+                } else {
+                    alert(result?.message || "Failed to delete reservation.");
+                    console.error("Delete Reservation Error:", result);
                 }
-            });
-
-            const result = await res.json().catch(() => null);
-
-            if (res.ok) {
-                alert(result?.message || "Reservation deleted successfully.");
-                loadReservations();
-            } else {
-                alert(result?.message || "Failed to delete reservation.");
-                console.error("Delete Reservation Error:", result);
+            } catch (err) {
+                console.error("Delete Reservation Fetch Error:", err);
+                alert("Error deleting record.");
             }
-        } catch (err) {
-            console.error("Delete Reservation Fetch Error:", err);
-            alert("Error deleting record.");
-        }
-    }
-
-    function logout() {
-        localStorage.clear();
-        window.location.href = "login.html";
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-        const role = (localStorage.getItem("role") || "").trim().toLowerCase();
-        const superAdminLink = document.getElementById("superAdminLink");
-
-        if (role && role !== "super admin" && superAdminLink) {
-            superAdminLink.style.display = "none";
         }
 
-        loadReservations();
-        setInterval(loadReservations, 30000);
-    });
-</script>
+        function logout() {
+            localStorage.clear();
+            window.location.href = "login.html";
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const role = (localStorage.getItem("role") || "").trim().toLowerCase();
+            const superAdminLink = document.getElementById("superAdminLink");
+
+            if (role && role !== "super admin" && superAdminLink) {
+                superAdminLink.style.display = "none";
+            }
+
+            loadReservations();
+            setInterval(loadReservations, 30000);
+        });
+    </script>
 </body>
+
 </html>
